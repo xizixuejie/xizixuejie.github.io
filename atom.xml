@@ -2,12 +2,17 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>不愧是我</title>
   
-  
+  <subtitle>我盼望行过山河万里也盼望与你行至梦里</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
   <updated>2020-01-02T14:47:58.487Z</updated>
   <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>夕子学姐</name>
+    
+  </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
   
