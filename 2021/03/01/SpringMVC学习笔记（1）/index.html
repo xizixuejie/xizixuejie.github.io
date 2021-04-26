@@ -125,16 +125,14 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/test1&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>,<span class="string">&quot;test1&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;test&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<pre><code>    访问路径：http://localhost:8080/项目名/test1
-</code></pre>
+<p>​    访问路径：<a target="_blank" rel="noopener" href="http://localhost:8080/%E9%A1%B9%E7%9B%AE%E5%90%8D/test1">http://localhost:8080/项目名/test1</a></p>
 <ul>
 <li>同时注解类与方法</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/admin&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/test2&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>,<span class="string">&quot;hello springmvc annotation!&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;test&quot;</span>; </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<pre><code>    访问路径：http://localhost:8080/项目名/admin/test1
-
-            * 需要先指定类的路径再指定方法的路径
+<p>​    访问路径：<a target="_blank" rel="noopener" href="http://localhost:8080/%E9%A1%B9%E7%9B%AE%E5%90%8D/admin/test1">http://localhost:8080/项目名/admin/test1</a></p>
+<pre><code>        * 需要先指定类的路径再指定方法的路径
 </code></pre>
 <h3 id="RequestParam"><a href="#RequestParam" class="headerlink" title="RequestParam"></a>RequestParam</h3><p>用于表单和后台的名字不一样</p>
 <p><strong>作用：</strong>把请求中指定的参数给控制器中的形参赋值。</p>
@@ -147,14 +145,11 @@
 
 
 <h3 id="RequestBody"><a href="#RequestBody" class="headerlink" title="RequestBody"></a>RequestBody</h3><p><strong>作用：</strong>用于获取请求体内容。直接得到的是 key=value&amp;key=value…结构的数据。</p>
-<pre><code>    get请求方式不适用
-</code></pre>
+<p>​    get请求方式不适用</p>
 <p><strong>属性：</strong></p>
 <p>required：是否必须有请求体。默认值是true。</p>
-<pre><code>    当取值为true时，get请求方式会报错。
-
-    如果取值为false，get请求得到的是null。
-</code></pre>
+<p>​    当取值为true时，get请求方式会报错。</p>
+<p>​    如果取值为false，get请求得到的是null。</p>
 <p><strong>示例</strong>：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testRequestBody&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">testRequestBody</span><span class="params">(<span class="meta">@RequestBody</span> String body)</span></span>&#123;</span><br><span class="line">    System.out.println(body);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;test&quot;</span>;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
