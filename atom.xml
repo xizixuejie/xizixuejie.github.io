@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>四风谷的雨</title>
+  
+  
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2021-04-26T07:19:44.959Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>夕子学姐</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AJAX&amp;JSON</title>
+    <link href="http://example.com/2021/04/11/AJAX-JSON/"/>
+    <id>http://example.com/2021/04/11/AJAX-JSON/</id>
+    <published>2021-04-11T08:25:25.000Z</published>
+    <updated>2021-04-26T07:19:44.959Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;AJAX的概念和实现方式、JSON的语法和转换&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="ajax" scheme="http://example.com/tags/ajax/"/>
+    
+    <category term="json" scheme="http://example.com/tags/json/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MyBatis学习笔记</title>
+    <link href="http://example.com/2021/03/30/MyBaits%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>http://example.com/2021/03/30/MyBaits%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</id>
+    <published>2021-03-30T12:42:21.000Z</published>
+    <updated>2021-04-26T07:18:08.421Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;mybatis的环境搭建、单表增删改查、基于xml配置的动态sql语句、多表操作&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="mybatis" scheme="http://example.com/tags/mybatis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC中的拦截器</title>
+    <link href="http://example.com/2021/03/06/SpringMVC%E4%B8%AD%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8/"/>
+    <id>http://example.com/2021/03/06/SpringMVC%E4%B8%AD%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8/</id>
+    <published>2021-03-06T07:54:40.000Z</published>
+    <updated>2021-04-26T07:15:38.727Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;拦截器的作用&quot;&gt;&lt;a href=&quot;#拦截器的作用&quot; class=&quot;headerlink&quot; title=&quot;拦截器的作用&quot;&gt;&lt;/a&gt;拦截器的作用&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;SpringMVC的处理器拦截器类似于 Servlet 开发中的过滤器 Filter，用于对处理器进行预处理和后处理。&lt;/p&gt;
+&lt;p&gt;用户可以自己定义一些拦截器来实现特定的功能。&lt;/p&gt;
+&lt;p&gt;拦截器链（Interceptor Chain）：拦截器链就是将拦截器按一定的顺序联结成一条链。&lt;/p&gt;
+&lt;p&gt;在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC的异常处理</title>
+    <link href="http://example.com/2021/03/04/SpringMVC%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/"/>
+    <id>http://example.com/2021/03/04/SpringMVC%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</id>
+    <published>2021-03-04T02:46:20.000Z</published>
+    <updated>2021-04-26T07:15:55.512Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;异常处理的思路&quot;&gt;&lt;a href=&quot;#异常处理的思路&quot; class=&quot;headerlink&quot; title=&quot;异常处理的思路&quot;&gt;&lt;/a&gt;异常处理的思路&lt;/h2&gt;&lt;p&gt;Controller调用Service，Service调用Dao，异常都是向上抛出的，最终有DispatcherServlet找异常处理器进行处理。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC文件上传</title>
+    <link href="http://example.com/2021/03/02/SpringMVC%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"/>
+    <id>http://example.com/2021/03/02/SpringMVC%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</id>
+    <published>2021-03-02T12:18:20.000Z</published>
+    <updated>2021-04-26T07:16:05.989Z</updated>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;文件上传的必要前提&quot;&gt;&lt;a href=&quot;#文件上传的必要前提&quot; class=&quot;headerlink&quot; title=&quot;文件上传的必要前提&quot;&gt;&lt;/a&gt;文件上传的必要前提&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;form表单的 &lt;code&gt;enctype&lt;/code&gt; 属性（表单请求正文的类型）必须是 &lt;code&gt;multipart/form-data&lt;/code&gt;  （默认值是 &lt;code&gt;application/x-www-form-urlencoded&lt;/code&gt;）&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;method&lt;/code&gt; 属性必须是是 &lt;code&gt;POST&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;提供一个文件选择区域 &lt;code&gt;&amp;lt;input type=&amp;quot;file&amp;quot;&amp;gt;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC学习笔记（2）</title>
+    <link href="http://example.com/2021/03/02/SpringMVC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%882%EF%BC%89/"/>
+    <id>http://example.com/2021/03/02/SpringMVC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%882%EF%BC%89/</id>
+    <published>2021-03-02T07:39:20.000Z</published>
+    <updated>2021-04-26T07:09:39.987Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;请求参数绑定、响应数据和结果类型&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringMVC学习笔记（1）</title>
+    <link href="http://example.com/2021/03/01/SpringMVC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/"/>
+    <id>http://example.com/2021/03/01/SpringMVC%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/</id>
+    <published>2021-03-01T06:35:43.000Z</published>
+    <updated>2021-04-26T07:08:00.862Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;环境搭建和常用注解&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>spring中的依赖注入</title>
+    <link href="http://example.com/2021/01/20/spring%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"/>
+    <id>http://example.com/2021/01/20/spring%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</id>
+    <published>2021-01-20T02:38:08.000Z</published>
+    <updated>2021-04-26T07:05:20.085Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;依赖注入：Dependency Injection&lt;/p&gt;
+&lt;p&gt;IOC的作用：降低程序间的耦合（依赖关系）&lt;/p&gt;
+&lt;p&gt;依赖关系的管理：以后都交给spring来维护&lt;/p&gt;
+&lt;p&gt;在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明&lt;/p&gt;
+&lt;p&gt;依赖关系的维护 就称之为依赖注入。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>spring对bean的管理细节</title>
+    <link href="http://example.com/2021/01/18/spring%E5%AF%B9bean%E7%9A%84%E7%AE%A1%E7%90%86%E7%BB%86%E8%8A%82/"/>
+    <id>http://example.com/2021/01/18/spring%E5%AF%B9bean%E7%9A%84%E7%AE%A1%E7%90%86%E7%BB%86%E8%8A%82/</id>
+    <published>2021-01-18T01:50:35.000Z</published>
+    <updated>2021-04-26T07:03:06.105Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;spring中创建bean的三种方式 、bean的作用范围调整、bean对象的声明周期&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>注解的基本用法</title>
+    <link href="http://example.com/2021/01/03/%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"/>
+    <id>http://example.com/2021/01/03/%E6%B3%A8%E8%A7%A3%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/</id>
+    <published>2021-01-03T01:41:53.000Z</published>
+    <updated>2021-04-26T08:24:45.113Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;注解：说明程序的。给计算机看的&lt;/p&gt;
+&lt;p&gt;注释：用文字描述程序的。给程序员看的&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>反射的基本用法</title>
+    <link href="http://example.com/2021/01/02/%E5%8F%8D%E5%B0%84%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/"/>
+    <id>http://example.com/2021/01/02/%E5%8F%8D%E5%B0%84%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/</id>
+    <published>2021-01-02T12:20:38.000Z</published>
+    <updated>2021-04-26T06:42:58.354Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;反射的好处；获取Class对象的方式；Class对象的功能；一个小案例&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL数据库增删改查SQL语句(整理集合)</title>
+    <link href="http://example.com/2020/10/21/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5SQL%E8%AF%AD%E5%8F%A5(%E6%95%B4%E7%90%86%E9%9B%86%E5%90%88)/"/>
+    <id>http://example.com/2020/10/21/MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5SQL%E8%AF%AD%E5%8F%A5(%E6%95%B4%E7%90%86%E9%9B%86%E5%90%88)/</id>
+    <published>2020-10-21T12:50:57.000Z</published>
+    <updated>2021-04-26T07:03:31.470Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;查看数据库&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;show databases; &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;使用数据库&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;use 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;创建数据库&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;CREATE DATABASE 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;删除数据库&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;DROP DATABASE 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    
+    <category term="mysql" scheme="http://example.com/tags/mysql/"/>
+    
+  </entry>
+  
+</feed>

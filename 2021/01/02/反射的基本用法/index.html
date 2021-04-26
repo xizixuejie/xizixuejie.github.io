@@ -31,7 +31,8 @@
 
       <!-- mermaid -->
       
-    </head>
+    <link rel="alternate" href="/atom.xml" title="四风谷的雨" type="application/atom+xml">
+</head>
   </html>
 </html>
 
@@ -39,6 +40,9 @@
 <body>
   <div id="app">
     
+      
+      <canvas width="1777" height="841"
+        style="position: fixed; left: 0px; top: 0px; z-index: 99999; pointer-events: none;"></canvas>
       
     <main class="content on">
       <section class="outer">
@@ -181,28 +185,10 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 框架类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//1.加载配置文件</span></span><br><span class="line">        Properties pro = <span class="keyword">new</span> Properties();<span class="comment">//创建Properties对象</span></span><br><span class="line">        ClassLoader classLoader = ReflectTest.class.getClassLoader();<span class="comment">//获取class目录下的配置文件</span></span><br><span class="line">        InputStream is = classLoader.getResourceAsStream(<span class="string">&quot;pro.properties&quot;</span>);</span><br><span class="line">        pro.load(is);<span class="comment">//加载配置文件</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.获取配置文件中定义的数据</span></span><br><span class="line">        String className = pro.getProperty(<span class="string">&quot;className&quot;</span>);</span><br><span class="line">        String methodName = pro.getProperty(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3.加载该类进内存</span></span><br><span class="line">        Class&lt;?&gt; cls = Class.forName(className);</span><br><span class="line">        <span class="comment">//4.创建对象</span></span><br><span class="line">        Object obj = cls.getConstructor().newInstance();</span><br><span class="line">        <span class="comment">//5.获取方法对象</span></span><br><span class="line">        Method method = cls.getMethod(methodName);</span><br><span class="line">        <span class="comment">//6.执行方法</span></span><br><span class="line">        method.invoke(obj);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 
       <!-- reward -->
       
-      <div id="reword-out">
-        <div id="reward-btn">
-          Donate
-        </div>
-      </div>
-      
     </div>
     
 
     <!-- copyright -->
-    
-    <div class="declare">
-      <ul class="post-copyright">
-        <li>
-          <i class="ri-copyright-line"></i>
-          <strong>Copyright： </strong>
-          
-          Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source.
-          
-        </li>
-      </ul>
-    </div>
     
     <footer class="article-footer">
        
@@ -337,7 +323,7 @@
     <ul>
       <li>
         Copyrights &copy;
-        2015-2021
+        2020-2021
         <i class="ri-heart-fill heart_icon"></i> 夕子学姐
       </li>
     </ul>
@@ -410,27 +396,11 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/categories">分类</a>
-    </li>
-    
-    <li class="nav-item">
       <a class="nav-item-link" href="/tags">标签</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/tags/%E6%97%85%E8%A1%8C/">旅行</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" target="_blank" rel="noopener" href="http://shenyu-vip.lofter.com">摄影</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/friends">友链</a>
-    </li>
-    
-    <li class="nav-item">
-      <a class="nav-item-link" href="/2019/about">关于我</a>
+      <a class="nav-item-link" href="/about">关于我</a>
     </li>
     
   </ul>
@@ -443,10 +413,6 @@
         <i class="ri-search-line"></i>
       </a>
       
-      
-      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
-        <i class="ri-rss-line"></i>
-      </a>
       
     </li>
   </ul>
@@ -631,7 +597,9 @@
 <!-- ClickBoom1 -->
 
 <!-- ClickBoom2 -->
-
+ 
+<script src="/js/clickBoom2.js"></script>
+ 
 <!-- CodeCopy -->
  
 <link rel="stylesheet" href="/css/clipboard.css">
@@ -691,7 +659,9 @@
 </script>
  
 <!-- CanvasBackground -->
-
+ 
+<script src="/js/dz.js"></script>
+ 
 <script>
   if (window.mermaid) {
     mermaid.initialize({ theme: "forest" });
