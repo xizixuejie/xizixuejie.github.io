@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>spring中的依赖注入 |  四风谷的雨</title>
+      <title>spring中的注解ioc |  四风谷的雨</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -47,7 +47,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-spring中的依赖注入"
+  id="post-spring中的注解ioc"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -58,7 +58,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  spring中的依赖注入
+  spring中的注解ioc
 </h1>
  
 
@@ -66,15 +66,15 @@
     </header>
      
     <div class="article-meta">
-      <a href="/posts/45b64bd9/" class="article-date">
-  <time datetime="2021-01-20T02:38:08.000Z" itemprop="datePublished">2021-01-20</time>
+      <a href="/posts/6a832505/" class="article-date">
+  <time datetime="2021-01-20T02:46:05.000Z" itemprop="datePublished">2021-01-20</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.1k</span>
+            <span class="post-count">853</span>
         </span>
     </span>
 
@@ -83,7 +83,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">4 分钟</span>
+            <span class="post-count">3 分钟</span>
         </span>
     </span>
 </div>
@@ -98,92 +98,122 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <blockquote>
-<p>依赖注入：Dependency Injection</p>
-<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
-<p>依赖关系的管理：以后都交给spring来维护</p>
-<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
-<p>依赖关系的维护 就称之为依赖注入。</p>
-</blockquote>
+  <p>spring中注解ioc的简单用法</p>
 <span id="more"></span>
 
+<h2 id="注解注入属性一个简单的案例"><a href="#注解注入属性一个简单的案例" class="headerlink" title="注解注入属性一个简单的案例"></a>注解注入属性一个简单的案例</h2><h3 id="Spring配置文件引入context约束"><a href="#Spring配置文件引入context约束" class="headerlink" title="Spring配置文件引入context约束"></a>Spring配置文件引入context约束</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring配置文件中开启注解扫描"><a href="#Spring配置文件中开启注解扫描" class="headerlink" title="Spring配置文件中开启注解扫描"></a>Spring配置文件中开启注解扫描</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--告知spring在创建容器时要扫描的包，配置所需要的标签，不是在beans的约束中，而是一个名称为context名称空间和约束中--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.demo&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="在类上添加-Component注解"><a href="#在类上添加-Component注解" class="headerlink" title="在类上添加@Component注解"></a>在类上添加@Component注解</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;user&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="comment">/*getter and stter*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-<p>依赖注入：</p>
-<p>能注入的数据：有三类</p>
+
+<h2 id="Spring-IoC常用注解"><a href="#Spring-IoC常用注解" class="headerlink" title="Spring IoC常用注解"></a>Spring IoC常用注解</h2><h3 id="用于创建对象的"><a href="#用于创建对象的" class="headerlink" title="用于创建对象的"></a>用于创建对象的</h3><blockquote>
+<p>他们的作用就和在XML配置文件中编写一个<code>&lt;bean&gt;</code>标签实现的功能是一样的</p>
+</blockquote>
+<p><code>@Component</code>:</p>
 <ul>
-<li><p>基本类型和String</p>
+<li><p><strong>作用：</strong>用于把当前类对象存入spring容器中</p>
 </li>
-<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
-</li>
-<li><p>复杂类型/集合类型</p>
-</li>
-</ul>
-<p> 注入的方式：有三种</p>
+<li><p><strong>属性：</strong></p>
 <ul>
-<li><p>第一种：使用构造函数提供</p>
-</li>
-<li><p>第二种：使用set方法提供（更常用的方式）</p>
-</li>
-<li><p>第三种：使用注解提供</p>
+<li>value：用于指定bean的id。当不写时，他的默认值是当前类名，且首字母改小写</li>
+</ul>
 </li>
 </ul>
-<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
-<li><p>使用的标签：<code>constructor-arg</code></p>
-</li>
-<li><p>标签出现的位置：<code>bean</code>标签内部</p>
-</li>
-<li><p>标签中的属性</p>
-<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
-<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
-<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p><code>value</code>：用于提供基本类型和String类型的数据</p>
-<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
-</li>
-<li><p>弊端：</p>
-<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
-<li><p>涉及的标签：<code>property</code></p>
-</li>
-<li><p>出现的位置：bean标签的内部</p>
-</li>
-<li><p>标签的属性：</p>
-<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p>value：用于提供基本类型和String类型的数据</p>
-<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
-</li>
-<li><p>弊端：</p>
-<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
-<li>用于给List结构集合注入的标签：</li>
-</ul>
-<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
+<p><code>@Controller</code>：一般用在表现层</p>
+<p><code>@Service</code>：一般用在业务层</p>
+<p><code>@Repository</code>：一般用在持久层</p>
 <ul>
-<li>用于给Map集合结构注入的标签：</li>
+<li><p>以上三个注解的作用和属性和@Component是一模一样的。</p>
+</li>
+<li><p>他们三个是spring框架为我们提供明确的三层使用的注解，使我们的三层对象更加清晰</p>
+</li>
 </ul>
-<p><code>map</code> 、<code>props</code></p>
-<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure> 
+<h3 id="用于注入数据的"><a href="#用于注入数据的" class="headerlink" title="用于注入数据的"></a>用于注入数据的</h3><blockquote>
+<p>他们的作用就和在XML配置文件中<code>&lt;bean&gt;</code>标签中写一个<code>&lt;property&gt;</code>标签的作用是一样的</p>
+</blockquote>
+<p><code>@Autowired</code>：</p>
+<ul>
+<li><p><strong>作用：</strong></p>
+<ul>
+<li>自动按照类型注入。只要容器中有唯一的一个bean对象类型和要注入的变量类型匹配，就可以注入成功</li>
+<li>如果ioc容器中没有任何bean类型和要注入的变量类型匹配，则报错。</li>
+<li>如果ioc容器中有多个类型匹配时：</li>
+</ul>
+</li>
+<li><p><strong>出现位置：</strong></p>
+<ul>
+<li>可以是变量上，也可以是方法上</li>
+</ul>
+</li>
+<li><p><strong>细节：</strong></p>
+<ul>
+<li>在使用注解注入时，set方法就不是必须的了</li>
+</ul>
+</li>
+</ul>
+<p><code>@Qualifier</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>在按照类型注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：用于指定注入bean的id</li>
+</ul>
+</li>
+</ul>
+<p><code>@Resource</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>直接按照bean的id注入。可以独立使用</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>name：用于指定注入bean的id</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>以上三个注入都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现</p>
+<p>另外集合类型的注入只能通过XML来实现</p>
+</blockquote>
+<p><code>@Value</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>用于注入基本类型和String类型的数据</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：用于指定数据的值。可以使用spring的SpEL(也就是spring的el表达式)</li>
+<li>SpEL的写法：${表达式}</li>
+</ul>
+</li>
+</ul>
+<h3 id="用于改变作用范围的"><a href="#用于改变作用范围的" class="headerlink" title="用于改变作用范围的"></a>用于改变作用范围的</h3><blockquote>
+<p>他们的作用就和在<code>&lt;bean&gt;</code>标签中使用<code>scope</code>属性实现的功能是一样的</p>
+</blockquote>
+<p><code>@Scope</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>用于指定bean的作用范围</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：指定范围的取值。常用取值<code>singleton</code> <code>prototype</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="和声明周期相关的"><a href="#和声明周期相关的" class="headerlink" title="和声明周期相关的"></a>和声明周期相关的</h3><blockquote>
+<p><code>&lt;bean&gt;</code>标签中使用<code>init-method</code>和<code>destroy-method</code>的作用是一样的</p>
+</blockquote>
+<p><code>@PreDestroy</code>：</p>
+<ul>
+<li><strong>作用：</strong>用于指定销毁方法</li>
+</ul>
+<p><code>@PostConstruct</code>：</p>
+<ul>
+<li><strong>作用：</strong>用于指定初始化方法</li>
+</ul>
+ 
       <!-- reward -->
       
     </div>
@@ -235,7 +265,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/posts/45b64bd9/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/posts/6a832505/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -248,19 +278,19 @@
    
   <nav class="article-nav">
     
-      <a href="/posts/6a832505/" class="article-nav-link">
+      <a href="/posts/2311821f/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            spring中的注解ioc
+            SpringMVC学习笔记（1）
           
         </div>
       </a>
     
     
-      <a href="/posts/4a4dd89f/" class="article-nav-link">
+      <a href="/posts/45b64bd9/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">spring对bean的管理细节</div>
+        <div class="article-nav-title">spring中的依赖注入</div>
       </a>
     
   </nav>
