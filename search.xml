@@ -675,6 +675,27 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringMVC的异常处理</title>
+    <url>/2021/03/04/SpringMVC%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
+    <content><![CDATA[<h2 id="异常处理的思路"><a href="#异常处理的思路" class="headerlink" title="异常处理的思路"></a>异常处理的思路</h2><p>Controller调用Service，Service调用Dao，异常都是向上抛出的，最终有DispatcherServlet找异常处理器进行处理。</p>
+<span id="more"></span>
+
+<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><ol>
+<li><p>编写自定义异常类（做提示信息的）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyException</span> <span class="keyword">extends</span> <span class="title">Exception</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyException</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMessage</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>编写异常处理器 实现 <code>HandlerExceptionResolver</code> 接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyExceptionResolver</span> <span class="keyword">implements</span> <span class="title">HandlerExceptionResolver</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">resolveException</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取到异常对象</span></span><br><span class="line">        MyException exception;</span><br><span class="line">        <span class="keyword">if</span> (e <span class="keyword">instanceof</span> MyException)&#123;</span><br><span class="line">            exception = (MyException) e;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            exception = <span class="keyword">new</span> MyException(<span class="string">&quot;出错了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建ModelAndView对象</span></span><br><span class="line">        ModelAndView mv = <span class="keyword">new</span> ModelAndView(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        mv.addObject(<span class="string">&quot;errorMsg&quot;</span>, exception.getMessage());</span><br><span class="line">        <span class="keyword">return</span> mv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在springmvc.xml配置异常处理器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.exception.MyExceptionResolver&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>再出异常就会跳转到/WEB-INF/jsp/error.jsp页面提示错误</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>spring中的依赖注入</title>
     <url>/2021/01/20/spring%E4%B8%AD%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</url>
     <content><![CDATA[<blockquote>
@@ -769,100 +790,6 @@
       </tags>
   </entry>
   <entry>
-    <title>spring对bean的管理细节</title>
-    <url>/2021/01/18/spring%E5%AF%B9bean%E7%9A%84%E7%AE%A1%E7%90%86%E7%BB%86%E8%8A%82/</url>
-    <content><![CDATA[<p>spring中创建bean的三种方式 、bean的作用范围调整、bean对象的声明周期</p>
-<span id="more"></span>
-
-<h2 id="创建bean的三种方式"><a href="#创建bean的三种方式" class="headerlink" title="创建bean的三种方式"></a>创建bean的三种方式</h2><ul>
-<li><p>第一种方式：使用默认构造函数创建。</p>
-<p>在spring的配置文件中使用bean标签，配以id和class属性之后，且没有其他属性和标签时。采用的就是默认构造函数创建bean对象，此时如果类中没有默认构造函数，则对象无法创建。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>第二种方式：使用普通工厂中的方法创建对象（使用某个类中的方法创建对象，并存入spring容器）</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.InstanceFactory&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建对象，并存入spring容器）</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.StaticFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="bean的作用范围调整"><a href="#bean的作用范围调整" class="headerlink" title="bean的作用范围调整"></a>bean的作用范围调整</h2><p>bean标签的scope属性：</p>
-<ul>
-<li><p>作用：用于指定bean的作用范围</p>
-</li>
-<li><p>取值： 常用的就是单例的和多例的</p>
-<ul>
-<li><p>singleton：单例的（默认值）</p>
-</li>
-<li><p>prototype：多例的</p>
-</li>
-<li><p>request：作用与web应用的请求范围</p>
-</li>
-<li><p>session：作用于web应用的会话范围</p>
-</li>
-<li><p>global-session：作用于集群环境的会话范围（全局会话范围），当不是集群环境时，它就是session</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span> <span class="attr">scope</span>=<span class="string">&quot;prototype&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<h2 id="bean对象的声明周期"><a href="#bean对象的声明周期" class="headerlink" title="bean对象的声明周期"></a>bean对象的声明周期</h2><ul>
-<li><p>单例对象</p>
-<ul>
-<li><p>出生：当容器创建时对象出生</p>
-</li>
-<li><p>活着：只要容器还在，对象一直活着</p>
-</li>
-<li><p>死亡：容器销毁，对象消亡</p>
-<p>总结：单例对象的声明周期和容器相同</p>
-</li>
-</ul>
-</li>
-<li><p>多例对象</p>
-<ul>
-<li>出生：当使用对象时spring框架为我们创建</li>
-<li>活着：对象只要是在使用过程中就一直活着。</li>
-<li>死亡：当对象长时间不用且没有别的对象引用时，由java的垃圾回收器回收</li>
-</ul>
-</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringMVC的异常处理</title>
-    <url>/2021/03/04/SpringMVC%E7%9A%84%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/</url>
-    <content><![CDATA[<h2 id="异常处理的思路"><a href="#异常处理的思路" class="headerlink" title="异常处理的思路"></a>异常处理的思路</h2><p>Controller调用Service，Service调用Dao，异常都是向上抛出的，最终有DispatcherServlet找异常处理器进行处理。</p>
-<span id="more"></span>
-
-<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><ol>
-<li><p>编写自定义异常类（做提示信息的）</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyException</span> <span class="keyword">extends</span> <span class="title">Exception</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyException</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMessage</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>编写异常处理器 实现 <code>HandlerExceptionResolver</code> 接口</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyExceptionResolver</span> <span class="keyword">implements</span> <span class="title">HandlerExceptionResolver</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">resolveException</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取到异常对象</span></span><br><span class="line">        MyException exception;</span><br><span class="line">        <span class="keyword">if</span> (e <span class="keyword">instanceof</span> MyException)&#123;</span><br><span class="line">            exception = (MyException) e;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            exception = <span class="keyword">new</span> MyException(<span class="string">&quot;出错了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建ModelAndView对象</span></span><br><span class="line">        ModelAndView mv = <span class="keyword">new</span> ModelAndView(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        mv.addObject(<span class="string">&quot;errorMsg&quot;</span>, exception.getMessage());</span><br><span class="line">        <span class="keyword">return</span> mv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在springmvc.xml配置异常处理器</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.exception.MyExceptionResolver&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>再出异常就会跳转到/WEB-INF/jsp/error.jsp页面提示错误</p>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>反射的基本用法</title>
     <url>/2021/01/02/%E5%8F%8D%E5%B0%84%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95/</url>
     <content><![CDATA[<p>反射的好处；获取Class对象的方式；Class对象的功能；一个小案例</p>
@@ -952,6 +879,79 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 框架类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReflectTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//1.加载配置文件</span></span><br><span class="line">        Properties pro = <span class="keyword">new</span> Properties();<span class="comment">//创建Properties对象</span></span><br><span class="line">        ClassLoader classLoader = ReflectTest.class.getClassLoader();<span class="comment">//获取class目录下的配置文件</span></span><br><span class="line">        InputStream is = classLoader.getResourceAsStream(<span class="string">&quot;pro.properties&quot;</span>);</span><br><span class="line">        pro.load(is);<span class="comment">//加载配置文件</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.获取配置文件中定义的数据</span></span><br><span class="line">        String className = pro.getProperty(<span class="string">&quot;className&quot;</span>);</span><br><span class="line">        String methodName = pro.getProperty(<span class="string">&quot;methodName&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3.加载该类进内存</span></span><br><span class="line">        Class&lt;?&gt; cls = Class.forName(className);</span><br><span class="line">        <span class="comment">//4.创建对象</span></span><br><span class="line">        Object obj = cls.getConstructor().newInstance();</span><br><span class="line">        <span class="comment">//5.获取方法对象</span></span><br><span class="line">        Method method = cls.getMethod(methodName);</span><br><span class="line">        <span class="comment">//6.执行方法</span></span><br><span class="line">        method.invoke(obj);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring对bean的管理细节</title>
+    <url>/2021/01/18/spring%E5%AF%B9bean%E7%9A%84%E7%AE%A1%E7%90%86%E7%BB%86%E8%8A%82/</url>
+    <content><![CDATA[<p>spring中创建bean的三种方式 、bean的作用范围调整、bean对象的声明周期</p>
+<span id="more"></span>
+
+<h2 id="创建bean的三种方式"><a href="#创建bean的三种方式" class="headerlink" title="创建bean的三种方式"></a>创建bean的三种方式</h2><ul>
+<li><p>第一种方式：使用默认构造函数创建。</p>
+<p>在spring的配置文件中使用bean标签，配以id和class属性之后，且没有其他属性和标签时。采用的就是默认构造函数创建bean对象，此时如果类中没有默认构造函数，则对象无法创建。</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第二种方式：使用普通工厂中的方法创建对象（使用某个类中的方法创建对象，并存入spring容器）</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.InstanceFactory&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建对象，并存入spring容器）</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.StaticFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="bean的作用范围调整"><a href="#bean的作用范围调整" class="headerlink" title="bean的作用范围调整"></a>bean的作用范围调整</h2><p>bean标签的scope属性：</p>
+<ul>
+<li><p>作用：用于指定bean的作用范围</p>
+</li>
+<li><p>取值： 常用的就是单例的和多例的</p>
+<ul>
+<li><p>singleton：单例的（默认值）</p>
+</li>
+<li><p>prototype：多例的</p>
+</li>
+<li><p>request：作用与web应用的请求范围</p>
+</li>
+<li><p>session：作用于web应用的会话范围</p>
+</li>
+<li><p>global-session：作用于集群环境的会话范围（全局会话范围），当不是集群环境时，它就是session</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span> <span class="attr">scope</span>=<span class="string">&quot;prototype&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="bean对象的声明周期"><a href="#bean对象的声明周期" class="headerlink" title="bean对象的声明周期"></a>bean对象的声明周期</h2><ul>
+<li><p>单例对象</p>
+<ul>
+<li><p>出生：当容器创建时对象出生</p>
+</li>
+<li><p>活着：只要容器还在，对象一直活着</p>
+</li>
+<li><p>死亡：容器销毁，对象消亡</p>
+<p>总结：单例对象的声明周期和容器相同</p>
+</li>
+</ul>
+</li>
+<li><p>多例对象</p>
+<ul>
+<li>出生：当使用对象时spring框架为我们创建</li>
+<li>活着：对象只要是在使用过程中就一直活着。</li>
+<li>死亡：当对象长时间不用且没有别的对象引用时，由java的垃圾回收器回收</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
       </tags>
   </entry>
   <entry>
