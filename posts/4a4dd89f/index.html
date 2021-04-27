@@ -106,17 +106,17 @@
 <p>在spring的配置文件中使用bean标签，配以id和class属性之后，且没有其他属性和标签时。采用的就是默认构造函数创建bean对象，此时如果类中没有默认构造函数，则对象无法创建。</p>
 </li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.ACountServiceImpl&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第二种方式：使用普通工厂中的方法创建对象（使用某个类中的方法创建对象，并存入spring容器）</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.InstanceFactory&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.factory.InstanceFactory&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">factory-bean</span>=<span class="string">&quot;instanceFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>第三种方式：使用工厂中的静态方法创建对象（使用某个类中的静态方法创建对象，并存入spring容器）</li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.factory.StaticFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.factory.StaticFactory&quot;</span> <span class="attr">factory-method</span>=<span class="string">&quot;getService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
 
 
@@ -139,7 +139,7 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.ACountServiceImpl&quot;</span> <span class="attr">scope</span>=<span class="string">&quot;prototype&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.ACountServiceImpl&quot;</span> <span class="attr">scope</span>=<span class="string">&quot;prototype&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
 
 <h2 id="bean对象的声明周期"><a href="#bean对象的声明周期" class="headerlink" title="bean对象的声明周期"></a>bean对象的声明周期</h2><ul>
@@ -356,7 +356,7 @@
 <nav class="navbar">
   
   <div class="logo">
-    <a href="/"><img src="/images/ayer-side.svg" alt="四风谷的雨"></a>
+    <a href="/"><img src="/images/side.ico" alt="四风谷的雨"></a>
   </div>
   
   <ul class="nav nav-main">
