@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-04-27T01:35:59.853Z</updated>
+  <updated>2021-04-26T23:42:23.821Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>spring中基于xml的aop配置</title>
-    <link href="http://example.com/posts/f21e4f2a/"/>
-    <id>http://example.com/posts/f21e4f2a/</id>
-    <published>2021-04-27T01:03:47.000Z</published>
-    <updated>2021-04-27T01:35:59.853Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;AOP （Aspect Orient Programming），直译过来就是 面向切面编程。AOP 是一种编程思想，是面向对象编程（OOP）的一种补充。面向对象编程将程序抽象成各个层次的对象，而面向切面编程是将程序抽象成各个切面。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-    <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-  </entry>
   
   <entry>
     <title>AJAX&amp;JSON</title>
@@ -176,6 +155,27 @@
     <category term="java" scheme="http://example.com/tags/java/"/>
     
     <category term="SpringMVC" scheme="http://example.com/tags/SpringMVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>spring中基于xml的aop配置</title>
+    <link href="http://example.com/posts/f21e4f2a/"/>
+    <id>http://example.com/posts/f21e4f2a/</id>
+    <published>2021-01-21T08:31:47.000Z</published>
+    <updated>2021-04-27T01:37:53.222Z</updated>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;AOP （Aspect Orient Programming），直译过来就是 面向切面编程。AOP 是一种编程思想，是面向对象编程（OOP）的一种补充。面向对象编程将程序抽象成各个层次的对象，而面向切面编程是将程序抽象成各个切面。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
     
   </entry>
   
