@@ -15,13 +15,7 @@
 </ul>
 <p><strong>实现方式：</strong></p>
 <ol>
-<li><p>原生的JS实现方式（了解）</p>
-</li>
-<li><p>JQuery实现方式</p>
-<ol>
 <li><code>$.ajax()</code> </li>
-</ol>
-</li>
 </ol>
 <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    url: <span class="string">&quot;ajaxServlet&quot;</span>,<span class="comment">//请求路径</span></span><br><span class="line">    method: <span class="string">&quot;POST&quot;</span>,<span class="comment">//请求方式</span></span><br><span class="line">    <span class="comment">// data:&quot;username=tom&amp;age=3&quot;,//请求参数</span></span><br><span class="line">    data: &#123;<span class="string">&quot;username&quot;</span>: <span class="string">&quot;jack&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">23</span>&#125;,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;<span class="comment">//响应成功后的回调函数</span></span><br><span class="line">        alert(data);</span><br><span class="line">    &#125;,</span><br><span class="line">    error: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="comment">//如果请求响应出现错误，会执行的回调函数</span></span><br><span class="line">        alert(<span class="string">&quot;出错了&quot;</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    dataType: <span class="string">&quot;text&quot;</span><span class="comment">//设置接收到的响应数据的格式</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
@@ -77,7 +71,7 @@
 </ol>
 <p><strong>服务器响应的数据，在客户端使用时，想要做json数据格式使用</strong></p>
 <ol>
-<li><p>$.get(type)：将最后一个参数type类型指定为”json”</p>
+<li><p><code>$.get(type)</code>：将最后一个参数type类型指定为 <code>json</code></p>
 </li>
 <li><p>在服务器端设置MIME类型 </p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">response.setContentType(<span class="string">&quot;application/json;charset=UTF-8&quot;</span>);</span><br></pre></td></tr></table></figure></li>
@@ -253,6 +247,37 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE 表名 DROP INDEX 索引名</span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringMVC中的拦截器</title>
+    <url>/posts/fa194db2/</url>
+    <content><![CDATA[<h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><blockquote>
+<p>SpringMVC的处理器拦截器类似于 Servlet 开发中的过滤器 Filter，用于对处理器进行预处理和后处理。</p>
+<p>用户可以自己定义一些拦截器来实现特定的功能。</p>
+<p>拦截器链（Interceptor Chain）：拦截器链就是将拦截器按一定的顺序联结成一条链。</p>
+<p>在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。</p>
+</blockquote>
+<span id="more"></span>
+
+<p><strong>拦截器和过滤器的区别：</strong></p>
+<blockquote>
+<p>过滤器是 servlet 规范中的一部分，任何 java web 工程都可以使用。</p>
+<p>拦截器是 SpringMVC 框架自己的，只有使用了 SpringMVC 框架的工程才能用。</p>
+<p>过滤器在 url-pattern 中配置了/*之后，可以对所有要访问的资源拦截。</p>
+<p>拦截器它是只会拦截访问的控制器方法，如果访问的是 jsp,html,css,image 或者 js 是不会进行拦截的。</p>
+<p>它也是 AOP 思想的具体应用。</p>
+</blockquote>
+<h2 id="自定义拦截器的实现步骤"><a href="#自定义拦截器的实现步骤" class="headerlink" title="自定义拦截器的实现步骤"></a>自定义拦截器的实现步骤</h2><ol>
+<li><p>编写拦截器类，实现 <code>HandlerInterceptor</code>  接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 预处理，Controller的方法执行前</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 如果是true，代表放行。执行下一个拦截器，如果没有下一个拦截器，执行Controller中的方法。</span></span><br><span class="line"><span class="comment">     *          如果是false，代表不放行。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;拦截器执行了&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在springmvc.xml中配置拦截器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置拦截器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--要拦截的具体方法 /**代表所有方法全部拦截--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--不拦截的方法</span></span><br><span class="line"><span class="comment">        &lt;mvc:exclude-mapping path=&quot;&quot;/&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--配置自定义拦截器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.interceptor.MyInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果有多个，在这里添加多个mvc:interceptor标签--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>SpringMVC</tag>
       </tags>
   </entry>
   <entry>
@@ -583,37 +608,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringMVC中的拦截器</title>
-    <url>/posts/fa194db2/</url>
-    <content><![CDATA[<h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><blockquote>
-<p>SpringMVC的处理器拦截器类似于 Servlet 开发中的过滤器 Filter，用于对处理器进行预处理和后处理。</p>
-<p>用户可以自己定义一些拦截器来实现特定的功能。</p>
-<p>拦截器链（Interceptor Chain）：拦截器链就是将拦截器按一定的顺序联结成一条链。</p>
-<p>在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。</p>
-</blockquote>
-<span id="more"></span>
-
-<p><strong>拦截器和过滤器的区别：</strong></p>
-<blockquote>
-<p>过滤器是 servlet 规范中的一部分，任何 java web 工程都可以使用。</p>
-<p>拦截器是 SpringMVC 框架自己的，只有使用了 SpringMVC 框架的工程才能用。</p>
-<p>过滤器在 url-pattern 中配置了/*之后，可以对所有要访问的资源拦截。</p>
-<p>拦截器它是只会拦截访问的控制器方法，如果访问的是 jsp,html,css,image 或者 js 是不会进行拦截的。</p>
-<p>它也是 AOP 思想的具体应用。</p>
-</blockquote>
-<h2 id="自定义拦截器的实现步骤"><a href="#自定义拦截器的实现步骤" class="headerlink" title="自定义拦截器的实现步骤"></a>自定义拦截器的实现步骤</h2><ol>
-<li><p>编写拦截器类，实现 <code>HandlerInterceptor</code>  接口</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 预处理，Controller的方法执行前</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 如果是true，代表放行。执行下一个拦截器，如果没有下一个拦截器，执行Controller中的方法。</span></span><br><span class="line"><span class="comment">     *          如果是false，代表不放行。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;拦截器执行了&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在springmvc.xml中配置拦截器</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置拦截器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--要拦截的具体方法 /**代表所有方法全部拦截--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--不拦截的方法</span></span><br><span class="line"><span class="comment">        &lt;mvc:exclude-mapping path=&quot;&quot;/&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--配置自定义拦截器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.interceptor.MyInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果有多个，在这里添加多个mvc:interceptor标签--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringMVC文件上传</title>
     <url>/posts/649603b7/</url>
     <content><![CDATA[<h2 id="文件上传的必要前提"><a href="#文件上传的必要前提" class="headerlink" title="文件上传的必要前提"></a>文件上传的必要前提</h2><ul>
@@ -689,6 +683,100 @@
       <tags>
         <tag>java</tag>
         <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring中的依赖注入</title>
+    <url>/posts/45b64bd9/</url>
+    <content><![CDATA[<blockquote>
+<p>依赖注入：Dependency Injection</p>
+<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
+<p>依赖关系的管理：以后都交给spring来维护</p>
+<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
+<p>依赖关系的维护 就称之为依赖注入。</p>
+</blockquote>
+<span id="more"></span>
+
+
+
+<p>依赖注入：</p>
+<p>能注入的数据：有三类</p>
+<ul>
+<li><p>基本类型和String</p>
+</li>
+<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
+</li>
+<li><p>复杂类型/集合类型</p>
+</li>
+</ul>
+<p> 注入的方式：有三种</p>
+<ul>
+<li><p>第一种：使用构造函数提供</p>
+</li>
+<li><p>第二种：使用set方法提供（更常用的方式）</p>
+</li>
+<li><p>第三种：使用注解提供</p>
+</li>
+</ul>
+<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
+<li><p>使用的标签：<code>constructor-arg</code></p>
+</li>
+<li><p>标签出现的位置：<code>bean</code>标签内部</p>
+</li>
+<li><p>标签中的属性</p>
+<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
+<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
+<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p><code>value</code>：用于提供基本类型和String类型的数据</p>
+<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
+</li>
+<li><p>弊端：</p>
+<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
+<li><p>涉及的标签：<code>property</code></p>
+</li>
+<li><p>出现的位置：bean标签的内部</p>
+</li>
+<li><p>标签的属性：</p>
+<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p>value：用于提供基本类型和String类型的数据</p>
+<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
+</li>
+<li><p>弊端：</p>
+<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
+<li>用于给List结构集合注入的标签：</li>
+</ul>
+<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
+<ul>
+<li>用于给Map集合结构注入的标签：</li>
+</ul>
+<p><code>map</code> 、<code>props</code></p>
+<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
       </tags>
   </entry>
   <entry>
@@ -816,6 +904,112 @@
       </tags>
   </entry>
   <entry>
+    <title>spring中基于xml的aop配置</title>
+    <url>/posts/f21e4f2a/</url>
+    <content><![CDATA[<blockquote>
+<p>AOP （Aspect Orient Programming），直译过来就是 面向切面编程。AOP 是一种编程思想，是面向对象编程（OOP）的一种补充。面向对象编程将程序抽象成各个层次的对象，而面向切面编程是将程序抽象成各个切面。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="AOP中的术语"><a href="#AOP中的术语" class="headerlink" title="AOP中的术语"></a>AOP中的术语</h2><p>AOP 领域中的特性术语：</p>
+<ul>
+<li>通知（Advice）: AOP 框架中的增强处理。通知描述了切面何时执行以及如何执行增强处理。</li>
+</ul>
+<ul>
+<li>连接点（join point）: 连接点表示应用执行过程中能够插入切面的一个点，这个点可以是方法的调用、异常的抛出。在 Spring AOP 中，连接点总是方法的调用。</li>
+<li>切点（PointCut）: 可以插入增强处理的连接点。</li>
+<li>切面（Aspect）: 切面是通知和切点的结合。</li>
+<li>引入（Introduction）：引入允许我们向现有的类添加新的方法或者属性。</li>
+<li>织入（Weaving）: 将增强处理添加到目标对象中，并创建一个被增强的对象，这个过程就是织入。</li>
+</ul>
+<p>概念看起来总是有点懵，并且上述术语，不同的参考书籍上翻译还不一样，所以需要慢慢在应用中理解。</p>
+<h2 id="简单的案例"><a href="#简单的案例" class="headerlink" title="简单的案例"></a>简单的案例</h2><p>需要一个方法记录日志</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用于记录日志的工具类，提供了公共的代码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 用于打印日志：计划让其在切入点方法之前执行（切入点方法就是业务层方法）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printLog</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Logger类中的printLog方法开始记录日志了。。。&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>业务层中的方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 账户的业务层实现类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountService</span> <span class="keyword">implements</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模拟保存账户</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了保存&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模拟更新账户</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateAccount</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了更新&quot;</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 模拟删除账户</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了删除&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="spring中基于xml的aop配置步骤"><a href="#spring中基于xml的aop配置步骤" class="headerlink" title="spring中基于xml的aop配置步骤"></a>spring中基于xml的aop配置步骤</h3><ol>
+<li><p>导入<code>aspectjweaver</code> 依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.9.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>把通知的bean也交给spring来管理</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置spring的ioc，把service对象配置进来--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountService&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>使用 <code>&lt;aop:config&gt;</code> 标签表明开始aop的配置</p>
+</li>
+<li><p>使用 <code>&lt;aop:aspect&gt;</code> 标签表明配置切面</p>
+<ul>
+<li><code>id</code>：给切面提供一个唯一标识</li>
+<li><code>ref</code>：指定通知类bean的id</li>
+</ul>
+</li>
+<li><p>在 <code>&lt;aop:aspect&gt;</code> 标签的内部使用对应的标签来配置通知的类型</p>
+<p>让 <code>printLog()</code> 方法在切入点方法执行之前执行</p>
+<ul>
+<li><code>&lt;aop:before&gt;</code>：表示配置前置通知</li>
+<li><code>method</code>：用于指定logger类中哪个方法是前置通知</li>
+<li><code>pointcut</code>：用于指定切入点表达式，指的是对业务层中的哪些方法增强</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置Logger类--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;logger&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.utils.Logger&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置aop--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置切面--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">id</span>=<span class="string">&quot;logAdvice&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;logger&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--配置通知类型且建立通知方法和切入点方法的关联--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">method</span>=<span class="string">&quot;printLog&quot;</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">pointcut</span>=<span class="string">&quot;execution(* com.xzxj.service.impl.*.*(..))&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="测试方法"><a href="#测试方法" class="headerlink" title="测试方法"></a>测试方法</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AOPTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1.获取容器</span></span><br><span class="line">        ApplicationContext ac = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;bean.xml&quot;</span>);</span><br><span class="line">        <span class="comment">// 2.获取对象</span></span><br><span class="line">        IAccountService service = ac.getBean(<span class="string">&quot;accountService&quot;</span>, IAccountService.class);</span><br><span class="line">        <span class="comment">// 3.执行方法</span></span><br><span class="line">        service.saveAccount();</span><br><span class="line">        service.updateAccount(<span class="number">1</span>);</span><br><span class="line">        service.deleteAccount();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出结果：</strong></p>
+<blockquote>
+<p>Logger类中的printLog方法开始记录日志了。。。<br>执行了保存<br>Logger类中的printLog方法开始记录日志了。。。<br>执行了更新1<br>Logger类中的printLog方法开始记录日志了。。。<br>执行了删除</p>
+</blockquote>
+<p>可以看到 <code>AccountService</code> 中的方法都被增强了，但并没有修改类中的任何方法，也没有修改测试类的方法。几乎是完全无侵入式地实现了需求。这就是 AOP 的“神奇”之处。</p>
+<h2 id="切入点表达式的写法"><a href="#切入点表达式的写法" class="headerlink" title="切入点表达式的写法"></a>切入点表达式的写法</h2><ul>
+<li><p>关键字：<code>execution(表达式)</code></p>
+</li>
+<li><p>表达式</p>
+<p><code>访问修饰符 返回值 全限定类名.方法名（参数列表）</code></p>
+</li>
+<li><p>标准的表达式写法</p>
+<p><code>public void com.xzxj.service.impl.AccountService.saveAccount()</code></p>
+</li>
+<li><p>访问修饰符可以省略</p>
+<p><code>void com.xzxj.service.impl.AccountService.saveAccount()</code></p>
+</li>
+<li><p>返回值可以使用通配符，表示任意返回值</p>
+<p><code>com.xzxj.service.impl.AccountService.saveAccount()</code></p>
+</li>
+<li><p>包名可以使用通配符，表示任意包。但是有几级包，就要写几个 <code>*</code></p>
+<p><code>* *.*.*.*.AccountService.saveAccount()</code></p>
+</li>
+<li><p>包名可以使用..表示当前包及其子包</p>
+<p><code>* *..AccountService.saveAccount()</code></p>
+</li>
+<li><p>类名和方法名都可以使用<em>来实现通配</em></p>
+<p><code>* *..*.*()</code></p>
+</li>
+<li><p>参数列表：</p>
+<ul>
+<li>可以直接写数据类型<ul>
+<li>基本类型直接写名称 <code>int</code></li>
+<li>引用类型写全限定类名 <code>java.lang.String</code></li>
+</ul>
+</li>
+<li>可以使用通配符表示任意类型，但是必须有参数</li>
+<li>可以使用 <code>..</code> 表示有无参数均可，有参数可以是任意类型</li>
+</ul>
+</li>
+<li><p>全通配写法：</p>
+<p><code>* *..*.*(..)</code></p>
+</li>
+<li><p>实际开发中切入点表达式的通常写法：</p>
+<p>切到业务层实现类下的所有方法</p>
+<p><code>* com.xzxj.service.impl.*.*(..)</code></p>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>spring对bean的管理细节</title>
     <url>/posts/4a4dd89f/</url>
     <content><![CDATA[<p>spring中创建bean的三种方式 、bean的作用范围调整、bean对象的声明周期</p>
@@ -883,100 +1077,6 @@
 </li>
 </ul>
 ]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>spring中的依赖注入</title>
-    <url>/posts/45b64bd9/</url>
-    <content><![CDATA[<blockquote>
-<p>依赖注入：Dependency Injection</p>
-<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
-<p>依赖关系的管理：以后都交给spring来维护</p>
-<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
-<p>依赖关系的维护 就称之为依赖注入。</p>
-</blockquote>
-<span id="more"></span>
-
-
-
-<p>依赖注入：</p>
-<p>能注入的数据：有三类</p>
-<ul>
-<li><p>基本类型和String</p>
-</li>
-<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
-</li>
-<li><p>复杂类型/集合类型</p>
-</li>
-</ul>
-<p> 注入的方式：有三种</p>
-<ul>
-<li><p>第一种：使用构造函数提供</p>
-</li>
-<li><p>第二种：使用set方法提供（更常用的方式）</p>
-</li>
-<li><p>第三种：使用注解提供</p>
-</li>
-</ul>
-<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
-<li><p>使用的标签：<code>constructor-arg</code></p>
-</li>
-<li><p>标签出现的位置：<code>bean</code>标签内部</p>
-</li>
-<li><p>标签中的属性</p>
-<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
-<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
-<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p><code>value</code>：用于提供基本类型和String类型的数据</p>
-<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
-</li>
-<li><p>弊端：</p>
-<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
-<li><p>涉及的标签：<code>property</code></p>
-</li>
-<li><p>出现的位置：bean标签的内部</p>
-</li>
-<li><p>标签的属性：</p>
-<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p>value：用于提供基本类型和String类型的数据</p>
-<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
-</li>
-<li><p>弊端：</p>
-<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
-<li>用于给List结构集合注入的标签：</li>
-</ul>
-<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
-<ul>
-<li>用于给Map集合结构注入的标签：</li>
-</ul>
-<p><code>map</code> 、<code>props</code></p>
-<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>java</tag>
         <tag>spring</tag>
