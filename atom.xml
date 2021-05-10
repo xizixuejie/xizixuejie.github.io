@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-04-26T23:42:23.821Z</updated>
+  <updated>2021-05-10T12:11:46.223Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis的数据类型和基本操作方法</title>
+    <link href="http://example.com/posts/c3319727/"/>
+    <id>http://example.com/posts/c3319727/</id>
+    <published>2021-05-10T11:59:17.000Z</published>
+    <updated>2021-05-10T12:11:46.223Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="redis" scheme="http://example.com/tags/redis/"/>
+    
+  </entry>
   
   <entry>
     <title>AJAX&amp;JSON</title>

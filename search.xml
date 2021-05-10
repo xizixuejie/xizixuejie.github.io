@@ -250,129 +250,99 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringMVC学习笔记（2）</title>
-    <url>/posts/31a42df1/</url>
-    <content><![CDATA[<p>请求参数绑定、响应数据和结果类型</p>
+    <title>Redis的数据类型和基本操作方法</title>
+    <url>/posts/c3319727/</url>
+    <content><![CDATA[<p>redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构</p>
 <span id="more"></span>
 
-
-
-<h2 id="一、请求参数绑定"><a href="#一、请求参数绑定" class="headerlink" title="一、请求参数绑定"></a>一、请求参数绑定</h2><h4 id="处理提交数据"><a href="#处理提交数据" class="headerlink" title="处理提交数据"></a>处理提交数据</h4><p>提交数据：<a href="http://localhost:8080/index.jsp?username=zhangsan&amp;password=123">http://localhost:8080/index.jsp?username=zhangsan&amp;password=123</a></p>
-<p>处理方法</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//使用Servlet原生API实现</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/g1&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam1</span><span class="params">(HttpServletRequest request, Model model)</span> </span>&#123;</span><br><span class="line">    String username = request.getParameter(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">    String password = request.getParameter(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">    String msg = username + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用同名匹配规则</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g2&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam2</span><span class="params">(String username, String password, Model model)</span> </span>&#123;</span><br><span class="line">    String msg = username + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交的参数名称和处理方法的参数名不一样</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g3&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam3</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String name, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model model)</span> </span>&#123;</span><br><span class="line">    String msg = name + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交的是一个对象</span></span><br><span class="line"><span class="comment">//前端传递的参数名必须和对象名一致，否则为null</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g4&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam4</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    System.out.println(user);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实体类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="comment">/*getter and setter*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="请求参数绑定集合类型"><a href="#请求参数绑定集合类型" class="headerlink" title="请求参数绑定集合类型"></a>请求参数绑定集合类型</h4><p>List：表单里的name写 list[i].属性</p>
-<p>Map：name写 map[‘key’].属性</p>
-<h4 id="自定义类型转换器"><a href="#自定义类型转换器" class="headerlink" title="自定义类型转换器"></a>自定义类型转换器</h4><p>​    如果字符串是2021-4-14这样的类型。SpringMVC不能自动进行类型转换，需要自定义类型转换器。</p>
-<p>​    写一个类实现 <code>org.springframework.core.convert.converter.Converter</code> 接口，并且实现 <code>convert</code> 方法</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringToDateConverter</span> <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">String</span>, <span class="title">Date</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符串转成日期</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> source 传进来的字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> date日期对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">convert</span><span class="params">(String source)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (source.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//把字符串转成日期</span></span><br><span class="line">            <span class="keyword">return</span> df.parse(source);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>​    在springmvc.xml注册自定义类型转换器</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置自定义类型转换器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.context.support.ConversionServiceFactoryBean&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">id</span>=<span class="string">&quot;conversionService&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;converters&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.utils.StringToDateConverter&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="二、响应数据和结果类型"><a href="#二、响应数据和结果类型" class="headerlink" title="二、响应数据和结果类型"></a>二、响应数据和结果类型</h2><h3 id="转发和重定向"><a href="#转发和重定向" class="headerlink" title="转发和重定向"></a>转发和重定向</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/f1/t2&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//转发 路径必须写成实际视图 url，不能写逻辑视图。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;forward:/WEB-INF/jsp/test.jsp&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/f1/t3&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//重定向 jsp 页面不能写在 WEB-INF 目录中，否则无法找到。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;redirect:/index.jsp&quot;</span>;<span class="comment">//不用加项目名</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="数据显示到前端"><a href="#数据显示到前端" class="headerlink" title="数据显示到前端"></a>数据显示到前端</h3><p><strong>第一种：通过ModelAndView</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>第二种：通过ModelMap</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(ModelMap modelMap)</span></span>&#123;</span><br><span class="line">    <span class="comment">//封装要显示到视图中的数据</span></span><br><span class="line">    <span class="comment">//相当于request.addAttribute</span></span><br><span class="line">    modelMap.addAttribute(<span class="string">&quot;attributeName&quot;</span>,<span class="string">&quot;attributeValue&quot;</span>);</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>第三种：通过Model</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">    <span class="comment">//封装要显示到视图中的数据</span></span><br><span class="line">    <span class="comment">//相当于request.addAttribute</span></span><br><span class="line">    model.addAttribute(<span class="string">&quot;attributeName&quot;</span>,<span class="string">&quot;attributeValue&quot;</span>);</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>对比</strong></p>
+<h2 id="一、Redis的数据结构"><a href="#一、Redis的数据结构" class="headerlink" title="一、Redis的数据结构"></a>一、Redis的数据结构</h2><ol>
+<li>字符串类型 <code>string</code></li>
+<li>哈希类型 <code>hash : map</code> 格式 </li>
+<li>列表类型 <code>list : linkedlist</code> 格式，支持重复元素</li>
+<li>集合类型 <code>set</code> : 不允许重复元素</li>
+<li>有序集合类型 <code>sortedset</code> : 不允许重复元素，且元素有顺序</li>
+</ol>
+<h2 id="二、操作方法"><a href="#二、操作方法" class="headerlink" title="二、操作方法"></a>二、操作方法</h2><h3 id="2-1-字符串类型-string"><a href="#2-1-字符串类型-string" class="headerlink" title="2.1 字符串类型 string"></a>2.1 字符串类型 string</h3><ol>
+<li><strong>存储：</strong> <code>set key value</code><br>127.0.0.1:6379&gt; set username zhangsan<br>OK</li>
+<li><strong>获取：</strong> <code>get key</code><br>127.0.0.1:6379&gt; get username<br>“zhangsan”</li>
+<li><strong>删除：</strong> <code>del key</code><br>127.0.0.1:6379&gt; del age<br>(integer) 1</li>
+</ol>
+<h3 id="2-2-哈希类型-hash"><a href="#2-2-哈希类型-hash" class="headerlink" title="2.2 哈希类型 hash"></a>2.2 哈希类型 hash</h3><ol>
+<li><p><strong>存储：</strong> <code>hset key field value</code><br>127.0.0.1:6379&gt; hset myhash username lisi<br>  (integer) 1</p>
+<p>127.0.0.1:6379&gt; hset myhash password 123<br>  (integer) 1</p>
+</li>
+<li><p><strong>获取：</strong> </p>
 <ul>
-<li>Model 只有几个方法只适合于储存数据，简化了对Model对象的操作</li>
-<li>ModelMap 继承了LinkedMap，除了自身实现了的一些方法，同样的继承LinkedMap的方法和特性</li>
-<li>ModelAndView 可以在储存数据的同时，可以进行设置返回的逻辑视图，进行控制展示层的跳转</li>
+<li><code>hget key field</code> ： 获取指定的field对应的值<br>127.0.0.1:6379&gt; hget myhash username<br>“lisi”</li>
+<li><code>hgetall key</code> ：获取所有的field和value<br>127.0.0.1:6379&gt; hgetall myhash<br>-1) “username”<br>-2) “lisi”<br>-3) “password”</li>
 </ul>
-<h3 id="返回值分类"><a href="#返回值分类" class="headerlink" title="返回值分类"></a>返回值分类</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>controller 方法返回字符串可以指定逻辑视图名，通过视图解析器解析为物理视图地址。 </p>
-<p>指定逻辑视图名，经过视图解析器解析为 jsp 物理路径：/WEB-INF/pages/success.jsp</p>
-<h4 id="void"><a href="#void" class="headerlink" title="void"></a>void</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testVoid&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testVoid</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;testVoid执行了&quot;</span>);</span><br><span class="line">    <span class="comment">//请求转发</span></span><br><span class="line">    request.getRequestDispatcher(<span class="string">&quot;/WEB-INF/jsp/test.jsp&quot;</span>).forward(request, response);</span><br><span class="line">    <span class="comment">//重定向</span></span><br><span class="line">    response.sendRedirect(request.getContextPath() + <span class="string">&quot;/a.jsp&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="ModelAndView"><a href="#ModelAndView" class="headerlink" title="ModelAndView"></a>ModelAndView</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testModelAndView&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">testModelAndView</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//创建ModelAndView对象</span></span><br><span class="line">    ModelAndView mv = <span class="keyword">new</span> ModelAndView();</span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="string">&quot;张三&quot;</span>,<span class="string">&quot;123&quot;</span>,<span class="number">12</span>);</span><br><span class="line">    mv.addObject(<span class="string">&quot;user&quot;</span>,user);</span><br><span class="line">    <span class="comment">//要跳转的页面名字 会经过视图解析器</span></span><br><span class="line">    mv.setViewName(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> mv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h3><ul>
-<li>JSON(JavaScript Object Notation, JS 对象标记) 是一种轻量级的数据交换格式。</li>
-</ul>
-<p>要求和语法格式：</p>
-<ul>
-<li>对象表示为键值对，数据由逗号分隔</li>
-<li>花括号保存对象</li>
-<li>方括号保存数组</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> user = &#123;</span><br><span class="line">        name: <span class="string">&quot;张三&quot;</span>,</span><br><span class="line">        age: <span class="number">3</span>,</span><br><span class="line">        sex: <span class="string">&quot;男&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将JavaScript对象转换为JSON对象</span></span><br><span class="line">    <span class="keyword">let</span> json = <span class="built_in">JSON</span>.stringify(user);</span><br><span class="line">    <span class="built_in">console</span>.log(json);</span><br><span class="line">	<span class="comment">//控制台输出</span></span><br><span class="line">	<span class="comment">//&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:3,&quot;sex&quot;:&quot;男&quot;&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//将JSON对象转换为JavaScript对象</span></span><br><span class="line">    <span class="keyword">let</span> obj = <span class="built_in">JSON</span>.parse(json);</span><br><span class="line">    <span class="built_in">console</span>.log(obj);</span><br><span class="line">	<span class="comment">//控制台输出</span></span><br><span class="line">	<span class="comment">/*&#123;name: &quot;张三&quot;, age: 3, sex: &quot;男&quot;&#125;</span></span><br><span class="line"><span class="comment">        age: 3</span></span><br><span class="line"><span class="comment">        name: &quot;张三&quot;</span></span><br><span class="line"><span class="comment">        sex: &quot;男&quot;</span></span><br><span class="line"><span class="comment">        __proto__: Object*/</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="ResponseBody响应json数据"><a href="#ResponseBody响应json数据" class="headerlink" title="ResponseBody响应json数据"></a>ResponseBody响应json数据</h4><ul>
-<li>导入Jackson依赖</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>前端页面脚本</li>
-</ul>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="string">&quot;#btn&quot;</span>).click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 发送ajax请求</span></span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            url: <span class="string">&quot;testAjax&quot;</span>,<span class="comment">//请求路径</span></span><br><span class="line">            method: <span class="string">&quot;POST&quot;</span>,<span class="comment">//请求方式</span></span><br><span class="line">            contentType: <span class="string">&quot;application/json; charset=utf-8&quot;</span>,</span><br><span class="line">            data: <span class="built_in">JSON</span>.stringify(&#123;<span class="attr">username</span>: <span class="string">&quot;jack&quot;</span>, <span class="attr">password</span>: <span class="string">&quot;123&quot;</span>, <span class="attr">age</span>: <span class="number">23</span>&#125;),</span><br><span class="line">            success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;<span class="comment">//响应成功后的回调函数</span></span><br><span class="line">                $(<span class="string">&quot;#msg&quot;</span>).html(data.username + <span class="string">&quot;,&quot;</span> + data.password + <span class="string">&quot;,&quot;</span> + data.age);</span><br><span class="line">            &#125;,</span><br><span class="line">            dataType: <span class="string">&quot;json&quot;</span><span class="comment">//设置接收到的响应数据的格式</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>对应的Controller</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testAjax&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">User <span class="title">testAjax</span><span class="params">(<span class="meta">@RequestBody</span> User user)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;testAjax方法执行了...&quot;</span>);</span><br><span class="line">    System.out.println(user);</span><br><span class="line">    user.setUsername(<span class="string">&quot;张三&quot;</span>);</span><br><span class="line">    user.setAge(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>被 <code>@RestController</code> 注解的类，该类下所有方法都不会走视图解析器。</p>
-<p>被 <code>@ResponseBody</code> 注解的方法，该方法不会走视图解析器，会直接返回一个字符串。</p>
+<p>-4) “123”</p>
+</li>
+<li><p><strong>删除：</strong> <code>hdel key field</code><br>127.0.0.1:6379&gt; hdel myhash username<br>(integer) 1</p>
+</li>
+</ol>
+<h3 id="2-3-列表类型-list"><a href="#2-3-列表类型-list" class="headerlink" title="2.3 列表类型 list"></a>2.3 列表类型 list</h3><blockquote>
+<p>可以添加一个元素到列表的头部（左边）或者尾部（右边）</p>
 </blockquote>
-<h4 id="乱码优化"><a href="#乱码优化" class="headerlink" title="乱码优化"></a>乱码优化</h4><ul>
-<li>解决中文乱码： <code>@RequestMapping</code> 注解改为</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;/testAjax&quot;,produces = &quot;application/json;charset=UTF-8&quot;)</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>乱码统一解决</strong></p>
+<ol>
+<li><p><strong>添加：</strong></p>
 <ul>
-<li>在springmvc.xml中配置</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;objectMapper&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;failOnEmptyBeans&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h4 id="FastJSON"><a href="#FastJSON" class="headerlink" title="FastJSON"></a>FastJSON</h4><ul>
-<li>导入fastjson依赖</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.75<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>​    <strong>fastjson三个主要的类</strong></p>
-<ul>
-<li><p>[JSONObject代表json对象]</p>
-<ul>
-<li>JSONObject实现了Map接口,猜想JSONObject底层操作是由Map实现的。</li>
-<li>JSONObject对应json对象，通过各种形式的get()方法可以获取json对象中的数据，也可利<br>用诸如size()，isEmpty()等方 法获取”键:值” 对的个数和判断是否为空。其本质是通过实现<br>Map接口并调用接口中的方法完成的。</li>
-</ul>
+<li><p><code>lpush key value</code> ：将元素加入列表左表</p>
 </li>
-<li><p>[JSONArray代表json对象数组]</p>
-<ul>
-<li>内部是有List接口中的方法来完成操作的。</li>
-</ul>
-</li>
-<li><p>[JSON代表JSONObject和JSONArray的转化]</p>
-<ul>
-<li>JSON类源码分析与使用</li>
-<li>仔细观察这些方法，主要是实现json对象，json对象数组，javabean对象， json字符串之间<br>的相互转化。</li>
-</ul>
+<li><p><code>rpush key value</code> ：将元素加入列表右边</p>
+<p>127.0.0.1:6379&gt; lpush myList a<br>(integer) 1</p>
+<p>127.0.0.1:6379&gt; lpush myList b<br>(integer) 2</p>
+<p>127.0.0.1:6379&gt; rpush myList c<br>(integer) 3</p>
 </li>
 </ul>
+</li>
+<li><p><strong>获取：</strong><code>lrange key start end</code>  ：范围获取<br>127.0.0.1:6379&gt; lrange myList 0 -1<br>-1) “b”<br>-2) “a”<br>-3) “c”</p>
+</li>
+<li><p><strong>删除：</strong></p>
+<ul>
+<li><code>lpop key</code>： 删除列表最左边的元素，并将元素返回</li>
+<li><code>rpop key</code>： 删除列表最右边的元素，并将元素返回</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-4-集合类型-set"><a href="#2-4-集合类型-set" class="headerlink" title="2.4 集合类型 set"></a>2.4 集合类型 set</h3><blockquote>
+<p>set ： 不允许重复元素</p>
+</blockquote>
+<ol>
+<li><p><strong>存储：</strong><code>sadd key value</code><br> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 0</p>
+</li>
+<li><p><strong>获取：</strong><code>smembers key</code> ：获取set集合中所有元素<br> 127.0.0.1:6379&gt; smembers myset</p>
+<ol>
+<li>“a”</li>
+</ol>
+</li>
+<li><p><strong>删除：</strong><code>srem key value</code> ：删除set集合中的某个元素<br> 127.0.0.1:6379&gt; srem myset a<br> (integer) 1</p>
+</li>
+</ol>
+<h3 id="2-5-有序集合类型-sortedset"><a href="#2-5-有序集合类型-sortedset" class="headerlink" title="2.5 有序集合类型 sortedset"></a>2.5 有序集合类型 sortedset</h3><blockquote>
+<p>sortedset：不允许重复元素，且元素有顺序.每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</p>
+</blockquote>
+<ol>
+<li><p><strong>存储：</strong><code>zadd key score value</code><br> 127.0.0.1:6379&gt; zadd mysort 60 zhangsan<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; zadd mysort 50 lisi<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; zadd mysort 80 wangwu<br> (integer) 1</p>
+</li>
+<li><p><strong>获取：</strong><code>zrange key start end [withscores]</code></p>
+<p>  127.0.0.1:6379&gt; zrange mysort 0 -1<br>  -1) “lisi”<br>  -2) “zhangsan”<br>  -3) “wangwu”</p>
+<p>  127.0.0.1:6379&gt; zrange mysort 0 -1 withscores<br>  -1) “zhangsan”<br>  -2) “60”<br>  -3) “wangwu”<br>  -4) “80”<br>  -5) “lisi”<br>  -6) “500”</p>
+</li>
+<li><p><strong>删除：</strong><code>zrem key value</code><br>  127.0.0.1:6379&gt; zrem mysort lisi<br>  (integer) 1</p>
+</li>
+</ol>
+<h3 id="2-6-通用命令"><a href="#2-6-通用命令" class="headerlink" title="2.6 通用命令"></a>2.6 通用命令</h3><ol>
+<li><code>keys *</code> ：查询所有的键</li>
+<li><code>type key</code> ： 获取键对应的value的类型</li>
+<li><code>del key</code>：删除指定的key value</li>
+</ol>
 ]]></content>
       <tags>
-        <tag>java</tag>
-        <tag>SpringMVC</tag>
+        <tag>redis</tag>
       </tags>
   </entry>
   <entry>
@@ -608,6 +578,132 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringMVC学习笔记（2）</title>
+    <url>/posts/31a42df1/</url>
+    <content><![CDATA[<p>请求参数绑定、响应数据和结果类型</p>
+<span id="more"></span>
+
+
+
+<h2 id="一、请求参数绑定"><a href="#一、请求参数绑定" class="headerlink" title="一、请求参数绑定"></a>一、请求参数绑定</h2><h4 id="处理提交数据"><a href="#处理提交数据" class="headerlink" title="处理提交数据"></a>处理提交数据</h4><p>提交数据：<a href="http://localhost:8080/index.jsp?username=zhangsan&amp;password=123">http://localhost:8080/index.jsp?username=zhangsan&amp;password=123</a></p>
+<p>处理方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//使用Servlet原生API实现</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/g1&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam1</span><span class="params">(HttpServletRequest request, Model model)</span> </span>&#123;</span><br><span class="line">    String username = request.getParameter(<span class="string">&quot;username&quot;</span>);</span><br><span class="line">    String password = request.getParameter(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">    String msg = username + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用同名匹配规则</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g2&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam2</span><span class="params">(String username, String password, Model model)</span> </span>&#123;</span><br><span class="line">    String msg = username + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交的参数名称和处理方法的参数名不一样</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g3&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam3</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String name, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model model)</span> </span>&#123;</span><br><span class="line">    String msg = name + <span class="string">&quot;:&quot;</span> + password;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, msg);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//提交的是一个对象</span></span><br><span class="line"><span class="comment">//前端传递的参数名必须和对象名一致，否则为null</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;g4&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getParam4</span><span class="params">(User user)</span> </span>&#123;</span><br><span class="line">    System.out.println(user);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实体类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">    <span class="comment">/*getter and setter*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="请求参数绑定集合类型"><a href="#请求参数绑定集合类型" class="headerlink" title="请求参数绑定集合类型"></a>请求参数绑定集合类型</h4><p>List：表单里的name写 list[i].属性</p>
+<p>Map：name写 map[‘key’].属性</p>
+<h4 id="自定义类型转换器"><a href="#自定义类型转换器" class="headerlink" title="自定义类型转换器"></a>自定义类型转换器</h4><p>​    如果字符串是2021-4-14这样的类型。SpringMVC不能自动进行类型转换，需要自定义类型转换器。</p>
+<p>​    写一个类实现 <code>org.springframework.core.convert.converter.Converter</code> 接口，并且实现 <code>convert</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringToDateConverter</span> <span class="keyword">implements</span> <span class="title">Converter</span>&lt;<span class="title">String</span>, <span class="title">Date</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符串转成日期</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> source 传进来的字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> date日期对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Date <span class="title">convert</span><span class="params">(String source)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (source.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        DateFormat df = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd&quot;</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//把字符串转成日期</span></span><br><span class="line">            <span class="keyword">return</span> df.parse(source);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ParseException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    在springmvc.xml注册自定义类型转换器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置自定义类型转换器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.context.support.ConversionServiceFactoryBean&quot;</span></span></span><br><span class="line"><span class="tag">      <span class="attr">id</span>=<span class="string">&quot;conversionService&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;converters&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.utils.StringToDateConverter&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="二、响应数据和结果类型"><a href="#二、响应数据和结果类型" class="headerlink" title="二、响应数据和结果类型"></a>二、响应数据和结果类型</h2><h3 id="转发和重定向"><a href="#转发和重定向" class="headerlink" title="转发和重定向"></a>转发和重定向</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/f1/t2&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//转发 路径必须写成实际视图 url，不能写逻辑视图。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;forward:/WEB-INF/jsp/test.jsp&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/f1/t3&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">test3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//重定向 jsp 页面不能写在 WEB-INF 目录中，否则无法找到。</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;redirect:/index.jsp&quot;</span>;<span class="comment">//不用加项目名</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="数据显示到前端"><a href="#数据显示到前端" class="headerlink" title="数据显示到前端"></a>数据显示到前端</h3><p><strong>第一种：通过ModelAndView</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第二种：通过ModelMap</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(ModelMap modelMap)</span></span>&#123;</span><br><span class="line">    <span class="comment">//封装要显示到视图中的数据</span></span><br><span class="line">    <span class="comment">//相当于request.addAttribute</span></span><br><span class="line">    modelMap.addAttribute(<span class="string">&quot;attributeName&quot;</span>,<span class="string">&quot;attributeValue&quot;</span>);</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>第三种：通过Model</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">handleRequest</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">    <span class="comment">//封装要显示到视图中的数据</span></span><br><span class="line">    <span class="comment">//相当于request.addAttribute</span></span><br><span class="line">    model.addAttribute(<span class="string">&quot;attributeName&quot;</span>,<span class="string">&quot;attributeValue&quot;</span>);</span><br><span class="line">    <span class="comment">//返回一个模型视图对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ModelAndView(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>对比</strong></p>
+<ul>
+<li>Model 只有几个方法只适合于储存数据，简化了对Model对象的操作</li>
+<li>ModelMap 继承了LinkedMap，除了自身实现了的一些方法，同样的继承LinkedMap的方法和特性</li>
+<li>ModelAndView 可以在储存数据的同时，可以进行设置返回的逻辑视图，进行控制展示层的跳转</li>
+</ul>
+<h3 id="返回值分类"><a href="#返回值分类" class="headerlink" title="返回值分类"></a>返回值分类</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><p>controller 方法返回字符串可以指定逻辑视图名，通过视图解析器解析为物理视图地址。 </p>
+<p>指定逻辑视图名，经过视图解析器解析为 jsp 物理路径：/WEB-INF/pages/success.jsp</p>
+<h4 id="void"><a href="#void" class="headerlink" title="void"></a>void</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testVoid&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testVoid</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;testVoid执行了&quot;</span>);</span><br><span class="line">    <span class="comment">//请求转发</span></span><br><span class="line">    request.getRequestDispatcher(<span class="string">&quot;/WEB-INF/jsp/test.jsp&quot;</span>).forward(request, response);</span><br><span class="line">    <span class="comment">//重定向</span></span><br><span class="line">    response.sendRedirect(request.getContextPath() + <span class="string">&quot;/a.jsp&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ModelAndView"><a href="#ModelAndView" class="headerlink" title="ModelAndView"></a>ModelAndView</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testModelAndView&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ModelAndView <span class="title">testModelAndView</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//创建ModelAndView对象</span></span><br><span class="line">    ModelAndView mv = <span class="keyword">new</span> ModelAndView();</span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="string">&quot;张三&quot;</span>,<span class="string">&quot;123&quot;</span>,<span class="number">12</span>);</span><br><span class="line">    mv.addObject(<span class="string">&quot;user&quot;</span>,user);</span><br><span class="line">    <span class="comment">//要跳转的页面名字 会经过视图解析器</span></span><br><span class="line">    mv.setViewName(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> mv;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="JSON"><a href="#JSON" class="headerlink" title="JSON"></a>JSON</h3><ul>
+<li>JSON(JavaScript Object Notation, JS 对象标记) 是一种轻量级的数据交换格式。</li>
+</ul>
+<p>要求和语法格式：</p>
+<ul>
+<li>对象表示为键值对，数据由逗号分隔</li>
+<li>花括号保存对象</li>
+<li>方括号保存数组</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> user = &#123;</span><br><span class="line">        name: <span class="string">&quot;张三&quot;</span>,</span><br><span class="line">        age: <span class="number">3</span>,</span><br><span class="line">        sex: <span class="string">&quot;男&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//将JavaScript对象转换为JSON对象</span></span><br><span class="line">    <span class="keyword">let</span> json = <span class="built_in">JSON</span>.stringify(user);</span><br><span class="line">    <span class="built_in">console</span>.log(json);</span><br><span class="line">	<span class="comment">//控制台输出</span></span><br><span class="line">	<span class="comment">//&#123;&quot;name&quot;:&quot;张三&quot;,&quot;age&quot;:3,&quot;sex&quot;:&quot;男&quot;&#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//将JSON对象转换为JavaScript对象</span></span><br><span class="line">    <span class="keyword">let</span> obj = <span class="built_in">JSON</span>.parse(json);</span><br><span class="line">    <span class="built_in">console</span>.log(obj);</span><br><span class="line">	<span class="comment">//控制台输出</span></span><br><span class="line">	<span class="comment">/*&#123;name: &quot;张三&quot;, age: 3, sex: &quot;男&quot;&#125;</span></span><br><span class="line"><span class="comment">        age: 3</span></span><br><span class="line"><span class="comment">        name: &quot;张三&quot;</span></span><br><span class="line"><span class="comment">        sex: &quot;男&quot;</span></span><br><span class="line"><span class="comment">        __proto__: Object*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="ResponseBody响应json数据"><a href="#ResponseBody响应json数据" class="headerlink" title="ResponseBody响应json数据"></a>ResponseBody响应json数据</h4><ul>
+<li>导入Jackson依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>前端页面脚本</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    $(<span class="string">&quot;#btn&quot;</span>).click(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 发送ajax请求</span></span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            url: <span class="string">&quot;testAjax&quot;</span>,<span class="comment">//请求路径</span></span><br><span class="line">            method: <span class="string">&quot;POST&quot;</span>,<span class="comment">//请求方式</span></span><br><span class="line">            contentType: <span class="string">&quot;application/json; charset=utf-8&quot;</span>,</span><br><span class="line">            data: <span class="built_in">JSON</span>.stringify(&#123;<span class="attr">username</span>: <span class="string">&quot;jack&quot;</span>, <span class="attr">password</span>: <span class="string">&quot;123&quot;</span>, <span class="attr">age</span>: <span class="number">23</span>&#125;),</span><br><span class="line">            success: <span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>&#123;<span class="comment">//响应成功后的回调函数</span></span><br><span class="line">                $(<span class="string">&quot;#msg&quot;</span>).html(data.username + <span class="string">&quot;,&quot;</span> + data.password + <span class="string">&quot;,&quot;</span> + data.age);</span><br><span class="line">            &#125;,</span><br><span class="line">            dataType: <span class="string">&quot;json&quot;</span><span class="comment">//设置接收到的响应数据的格式</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>对应的Controller</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/testAjax&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@ResponseBody</span> <span class="function">User <span class="title">testAjax</span><span class="params">(<span class="meta">@RequestBody</span> User user)</span></span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;testAjax方法执行了...&quot;</span>);</span><br><span class="line">    System.out.println(user);</span><br><span class="line">    user.setUsername(<span class="string">&quot;张三&quot;</span>);</span><br><span class="line">    user.setAge(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>被 <code>@RestController</code> 注解的类，该类下所有方法都不会走视图解析器。</p>
+<p>被 <code>@ResponseBody</code> 注解的方法，该方法不会走视图解析器，会直接返回一个字符串。</p>
+</blockquote>
+<h4 id="乱码优化"><a href="#乱码优化" class="headerlink" title="乱码优化"></a>乱码优化</h4><ul>
+<li>解决中文乱码： <code>@RequestMapping</code> 注解改为</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;/testAjax&quot;,produces = &quot;application/json;charset=UTF-8&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>乱码统一解决</strong></p>
+<ul>
+<li>在springmvc.xml中配置</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;objectMapper&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;failOnEmptyBeans&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="FastJSON"><a href="#FastJSON" class="headerlink" title="FastJSON"></a>FastJSON</h4><ul>
+<li>导入fastjson依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.75<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>​    <strong>fastjson三个主要的类</strong></p>
+<ul>
+<li><p>[JSONObject代表json对象]</p>
+<ul>
+<li>JSONObject实现了Map接口,猜想JSONObject底层操作是由Map实现的。</li>
+<li>JSONObject对应json对象，通过各种形式的get()方法可以获取json对象中的数据，也可利<br>用诸如size()，isEmpty()等方 法获取”键:值” 对的个数和判断是否为空。其本质是通过实现<br>Map接口并调用接口中的方法完成的。</li>
+</ul>
+</li>
+<li><p>[JSONArray代表json对象数组]</p>
+<ul>
+<li>内部是有List接口中的方法来完成操作的。</li>
+</ul>
+</li>
+<li><p>[JSON代表JSONObject和JSONArray的转化]</p>
+<ul>
+<li>JSON类源码分析与使用</li>
+<li>仔细观察这些方法，主要是实现json对象，json对象数组，javabean对象， json字符串之间<br>的相互转化。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringMVC文件上传</title>
     <url>/posts/649603b7/</url>
     <content><![CDATA[<h2 id="文件上传的必要前提"><a href="#文件上传的必要前提" class="headerlink" title="文件上传的必要前提"></a>文件上传的必要前提</h2><ul>
@@ -683,100 +779,6 @@
       <tags>
         <tag>java</tag>
         <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>spring中的依赖注入</title>
-    <url>/posts/45b64bd9/</url>
-    <content><![CDATA[<blockquote>
-<p>依赖注入：Dependency Injection</p>
-<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
-<p>依赖关系的管理：以后都交给spring来维护</p>
-<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
-<p>依赖关系的维护 就称之为依赖注入。</p>
-</blockquote>
-<span id="more"></span>
-
-
-
-<p>依赖注入：</p>
-<p>能注入的数据：有三类</p>
-<ul>
-<li><p>基本类型和String</p>
-</li>
-<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
-</li>
-<li><p>复杂类型/集合类型</p>
-</li>
-</ul>
-<p> 注入的方式：有三种</p>
-<ul>
-<li><p>第一种：使用构造函数提供</p>
-</li>
-<li><p>第二种：使用set方法提供（更常用的方式）</p>
-</li>
-<li><p>第三种：使用注解提供</p>
-</li>
-</ul>
-<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
-<li><p>使用的标签：<code>constructor-arg</code></p>
-</li>
-<li><p>标签出现的位置：<code>bean</code>标签内部</p>
-</li>
-<li><p>标签中的属性</p>
-<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
-<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
-<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p><code>value</code>：用于提供基本类型和String类型的数据</p>
-<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
-</li>
-<li><p>弊端：</p>
-<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
-<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
-</li>
-<li><p>出现的位置：bean标签的内部</p>
-</li>
-<li><p>标签的属性：</p>
-<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p>value：用于提供基本类型和String类型的数据</p>
-<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
-</li>
-<li><p>弊端：</p>
-<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
-<li>用于给List结构集合注入的标签：</li>
-</ul>
-<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
-<ul>
-<li>用于给Map集合结构注入的标签：</li>
-</ul>
-<p><code>map</code> 、<code>props</code></p>
-<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>spring</tag>
       </tags>
   </entry>
   <entry>
@@ -880,6 +882,100 @@
 </li>
 </ul>
 ]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring中的依赖注入</title>
+    <url>/posts/45b64bd9/</url>
+    <content><![CDATA[<blockquote>
+<p>依赖注入：Dependency Injection</p>
+<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
+<p>依赖关系的管理：以后都交给spring来维护</p>
+<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
+<p>依赖关系的维护 就称之为依赖注入。</p>
+</blockquote>
+<span id="more"></span>
+
+
+
+<p>依赖注入：</p>
+<p>能注入的数据：有三类</p>
+<ul>
+<li><p>基本类型和String</p>
+</li>
+<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
+</li>
+<li><p>复杂类型/集合类型</p>
+</li>
+</ul>
+<p> 注入的方式：有三种</p>
+<ul>
+<li><p>第一种：使用构造函数提供</p>
+</li>
+<li><p>第二种：使用set方法提供（更常用的方式）</p>
+</li>
+<li><p>第三种：使用注解提供</p>
+</li>
+</ul>
+<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
+<li><p>使用的标签：<code>constructor-arg</code></p>
+</li>
+<li><p>标签出现的位置：<code>bean</code>标签内部</p>
+</li>
+<li><p>标签中的属性</p>
+<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
+<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
+<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p><code>value</code>：用于提供基本类型和String类型的数据</p>
+<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
+</li>
+<li><p>弊端：</p>
+<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
+<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
+</li>
+<li><p>出现的位置：bean标签的内部</p>
+</li>
+<li><p>标签的属性：</p>
+<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p>value：用于提供基本类型和String类型的数据</p>
+<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
+</li>
+<li><p>弊端：</p>
+<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
+<li>用于给List结构集合注入的标签：</li>
+</ul>
+<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
+<ul>
+<li>用于给Map集合结构注入的标签：</li>
+</ul>
+<p><code>map</code> 、<code>props</code></p>
+<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>java</tag>
         <tag>spring</tag>
