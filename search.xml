@@ -250,61 +250,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot入门</title>
-    <url>/posts/3ce02997/</url>
-    <content><![CDATA[<p>Spring Boot 是由 Pivotal 团队提供的全新框架，其设计目的是用来简化新 Spring 应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。</p>
-<span id="more"></span>
-
-
-
-<h2 id="一、系统要求"><a href="#一、系统要求" class="headerlink" title="一、系统要求"></a>一、系统要求</h2><ul>
-<li>Java 8+</li>
-<li>Maven 3.3+</li>
-</ul>
-<h2 id="二、快速入门"><a href="#二、快速入门" class="headerlink" title="二、快速入门"></a>二、快速入门</h2><h3 id="2-1-创建maven工程"><a href="#2-1-创建maven工程" class="headerlink" title="2.1 创建maven工程"></a>2.1 创建maven工程</h3><h3 id="2-2-引入依赖"><a href="#2-2-引入依赖" class="headerlink" title="2.2 引入依赖"></a>2.2 引入依赖</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--web相关的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-3-创建主程序"><a href="#2-3-创建主程序" class="headerlink" title="2.3 创建主程序"></a>2.3 创建主程序</h3><ul>
-<li>MainApplication.java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span><span class="comment">//这是一个springboot应用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(MainApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-4-编写业务"><a href="#2-4-编写业务" class="headerlink" title="2.4 编写业务"></a>2.4 编写业务</h3><ul>
-<li>HelloController.java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello springboot2!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-5-测试"><a href="#2-5-测试" class="headerlink" title="2.5 测试"></a>2.5 测试</h3><ol>
-<li><p>直接运行MainApplication.java</p>
-</li>
-<li><p>浏览器访问 <code>http://localhost:8080/hello</code></p>
-</li>
-<li><p>响应结果：</p>
-</li>
-</ol>
-<blockquote>
-<p>hello springboot2!</p>
-</blockquote>
-<h3 id="2-6-简化配置"><a href="#2-6-简化配置" class="headerlink" title="2.6 简化配置"></a>2.6 简化配置</h3><ul>
-<li>可以在 <code>application.properties</code> 或者 <code>application.yml</code> 文件内中指定各种属性</li>
-<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties">常见的Spring Boot属性列表以及对使用它们的基础类的引用</a></li>
-</ul>
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改端口号</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">80</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-7-简化部署"><a href="#2-7-简化部署" class="headerlink" title="2.7 简化部署"></a>2.7 简化部署</h3><blockquote>
-<p>创建一个可以在生产环境中运行的完全独立的可执行jar文件。可执行jar（有时称为 “fat jars”）是包含已编译类以及代码需要运行的所有jar依赖项的归档文件。</p>
-</blockquote>
-<p>要创建可执行jar，需要将添加 <code>spring-boot-maven-plugin</code> 到 <code>pom.xml</code> 。为此，在 <code>dependencies</code> 部分下方插入以下行：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>保存 <code>pom.xml</code> 然后在终端运行 <code>mvn package</code></p>
-<p>在 <code>target</code> 目录下，有一个 <code>springboot01-hello-world-0.0.1-SNAPSHOT.jar</code></p>
-<p>使用 <code>java -jar</code> 命令运行该程序</p>
-]]></content>
-      <tags>
-        <tag>springboot</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Redis的数据类型和基本操作方法</title>
     <url>/posts/c3319727/</url>
     <content><![CDATA[<p>redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构</p>
@@ -402,6 +347,61 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot入门</title>
+    <url>/posts/3ce02997/</url>
+    <content><![CDATA[<p>Spring Boot 是由 Pivotal 团队提供的全新框架，其设计目的是用来简化新 Spring 应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。</p>
+<span id="more"></span>
+
+
+
+<h2 id="一、系统要求"><a href="#一、系统要求" class="headerlink" title="一、系统要求"></a>一、系统要求</h2><ul>
+<li>Java 8+</li>
+<li>Maven 3.3+</li>
+</ul>
+<h2 id="二、快速入门"><a href="#二、快速入门" class="headerlink" title="二、快速入门"></a>二、快速入门</h2><h3 id="2-1-创建maven工程"><a href="#2-1-创建maven工程" class="headerlink" title="2.1 创建maven工程"></a>2.1 创建maven工程</h3><h3 id="2-2-引入依赖"><a href="#2-2-引入依赖" class="headerlink" title="2.2 引入依赖"></a>2.2 引入依赖</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--web相关的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-创建主程序"><a href="#2-3-创建主程序" class="headerlink" title="2.3 创建主程序"></a>2.3 创建主程序</h3><ul>
+<li>MainApplication.java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span><span class="comment">//这是一个springboot应用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(MainApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-编写业务"><a href="#2-4-编写业务" class="headerlink" title="2.4 编写业务"></a>2.4 编写业务</h3><ul>
+<li>HelloController.java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello springboot2!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-测试"><a href="#2-5-测试" class="headerlink" title="2.5 测试"></a>2.5 测试</h3><ol>
+<li><p>直接运行MainApplication.java</p>
+</li>
+<li><p>浏览器访问 <code>http://localhost:8080/hello</code></p>
+</li>
+<li><p>响应结果：</p>
+</li>
+</ol>
+<blockquote>
+<p>hello springboot2!</p>
+</blockquote>
+<h3 id="2-6-简化配置"><a href="#2-6-简化配置" class="headerlink" title="2.6 简化配置"></a>2.6 简化配置</h3><ul>
+<li>可以在 <code>application.properties</code> 或者 <code>application.yml</code> 文件内中指定各种属性</li>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties">常见的Spring Boot属性列表以及对使用它们的基础类的引用</a></li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改端口号</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">80</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-7-简化部署"><a href="#2-7-简化部署" class="headerlink" title="2.7 简化部署"></a>2.7 简化部署</h3><blockquote>
+<p>创建一个可以在生产环境中运行的完全独立的可执行jar文件。可执行jar（有时称为 “fat jars”）是包含已编译类以及代码需要运行的所有jar依赖项的归档文件。</p>
+</blockquote>
+<p>要创建可执行jar，需要将添加 <code>spring-boot-maven-plugin</code> 到 <code>pom.xml</code> 。为此，在 <code>dependencies</code> 部分下方插入以下行：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>保存 <code>pom.xml</code> 然后在终端运行 <code>mvn package</code></p>
+<p>在 <code>target</code> 目录下，有一个 <code>springboot01-hello-world-0.0.1-SNAPSHOT.jar</code></p>
+<p>使用 <code>java -jar</code> 命令运行该程序</p>
+]]></content>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringBoot特点</title>
     <url>/posts/f98c6656/</url>
     <content><![CDATA[<p>SpringBoot 依赖管理 和 自动配置 的特性</p>
@@ -479,6 +479,97 @@
 <li>Spring Boot 所有的自动配置功能都在 spring-boot-autoconfigure 包里面</li>
 </ul>
 ]]></content>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot的容器功能</title>
+    <url>/posts/d88cfa76/</url>
+    <content><![CDATA[<p>SpringBoot 的组件添加、原生配置文件引入和配置绑定</p>
+<span id="more"></span>
+
+<h2 id="一、组件添加"><a href="#一、组件添加" class="headerlink" title="一、组件添加"></a>一、组件添加</h2><h3 id="1-1-Configuration"><a href="#1-1-Configuration" class="headerlink" title="1.1 @Configuration"></a>1.1 @Configuration</h3><ul>
+<li><p>基本使用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    <span class="comment">//给容器中添加组件</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">user</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> User(<span class="string">&quot;小明&quot;</span>,<span class="number">18</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean(&quot;tomcat&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Pet <span class="title">pet</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Pet(<span class="string">&quot;tomcat&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>@Configuration</code> ：告诉SpringBoot这是一个配置类，就是以前的配置文件</li>
+<li>方法名：组件的id。如果指定了 <code>@Bean</code> 中的 <code>name</code> 属性，那么 <code>name</code> 属性就是组件的id</li>
+<li>返回类型：组件类型</li>
+<li>返回值：容器中的实例</li>
+</ul>
+</li>
+<li><p>配置类里面使用 <code>@Bean</code> 标注在方法上给容器注册的组件，默认都是单例的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1.返回ioc容器</span></span><br><span class="line">        ConfigurableApplicationContext run = SpringApplication.run(MainApplication.class, args);</span><br><span class="line">        <span class="comment">// 2.从容器中获取组件</span></span><br><span class="line">        User user1 = run.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line">        User user2 = run.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line">        System.out.println(<span class="string">&quot;组件是否是单例的：&quot;</span> + (user1 == user2));<span class="comment">//true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>配置类本身也是组件</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">MyConfig myConfig = run.getBean(MyConfig.class);</span><br><span class="line">System.out.println(myConfig);<span class="comment">//com.xzxj.config.MyConfig$$EnhancerBySpringCGLIB$$fdebd3e3@7bc9e6ab</span></span><br></pre></td></tr></table></figure></li>
+<li><p>Spring 5.2 版本以后，<code>@Configuration</code> 注解多了一个 <code>proxyBeanMethods</code> 属性，默认值为 <code>true</code></p>
+<ul>
+<li><p>代理 bean 的方法</p>
+</li>
+<li><p>外部无论对配置类中的注册方法调用多少次，获取的都是之前注册到容器中的单例对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">User user1 = myConfig.user();</span><br><span class="line">User user2 = myConfig.user();</span><br><span class="line">System.out.println(user1 == user2);<span class="comment">//true</span></span><br></pre></td></tr></table></figure></li>
+<li><p>如果 <code>proxyBeanMethods = true</code> ，就是用代理对象调用方法。</p>
+</li>
+<li><p>如果 <code>proxyBeanMethods = false</code> ，拿到的就不是代理对象，多次调用得到的组件就不是同一个。</p>
+</li>
+</ul>
+</li>
+<li><p>Full 模式与 Lite 模式</p>
+<ul>
+<li>Full 模式： <code>proxyBeanMethods = true</code> ，保证每个 <code>@Bean</code> 方法被调用多少次返回的组件都是单实例的。Spring Boot 总会检查该组件是否在容器中存在，如果有就直接取出；如果没有就创建。保持组件单实例。</li>
+<li>Lite 模式： <code>proxyBeanMethods = false</code> ，每个 <code>@Bean</code> 方法被调用多少次返回的组件都是新创建的。Spring Boot 不会检查注册组件的方法的组件在容器中是否存在。</li>
+</ul>
+</li>
+<li><p>组件依赖： </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration(proxyBeanMethods = true)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">user</span><span class="params">()</span></span>&#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setName(<span class="string">&quot;小明&quot;</span>);</span><br><span class="line">       	<span class="comment">//User组件依赖Pet组件</span></span><br><span class="line">        user.setPet(pet());</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Bean(&quot;tomcat&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Pet <span class="title">pet</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Pet(<span class="string">&quot;tomcat&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>测试方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">User user = run.getBean(<span class="string">&quot;user&quot;</span>, User.class);</span><br><span class="line">Pet tomcat = run.getBean(<span class="string">&quot;tomcat&quot;</span>, Pet.class);</span><br><span class="line">System.out.println(<span class="string">&quot;用户的宠物是否是容器中的：&quot;</span> + (user.getPet() == tomcat));<span class="comment">//true</span></span><br></pre></td></tr></table></figure></li>
+<li><p>如果 <code>proxyBeanMethods = false</code> 输出结果为 <code>false</code></p>
+</li>
+</ul>
+</li>
+<li><p>总结：</p>
+<ul>
+<li>如果在只是在容器中注册组件，该组件不被依赖，一般都把 <code>proxyBeanMethods</code> 设置为 <code>false</code> ，这样 Spring Boot 启动就会快一点，加载也快一点。</li>
+<li>如果该组件被依赖，就把 <code>proxyBeanMethods</code> 设置为 <code>true</code> ，保证依赖的组件就是容器中的组件。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-常用注解"><a href="#1-2-常用注解" class="headerlink" title="1.2 常用注解"></a>1.2 常用注解</h3><ul>
+<li><code>@Bean</code> ：标注实例是一个Spring容器    </li>
+<li><code>@Component</code> ：标注是个容器（一般加入配置）</li>
+<li><code>@Controller</code> ：在Controller层标注由mvc管理</li>
+<li><code>@Service</code> ：服务层容器</li>
+<li><code>@Repository</code> ：持久层容器</li>
+<li><code>@Import</code> ：快速给容器中导入一个组件</li>
+</ul>
+<h3 id="1-3-Import"><a href="#1-3-Import" class="headerlink" title="1.3 @Import"></a>1.3 @Import</h3><ul>
+<li><p><code>@Import</code> 可以导入bean或者 <code>@Configuration</code> 修饰的配置类。</p>
+</li>
+<li><p>如果配置类在标准的 Spring Boot 的包结构下，就是 <code>SpringbootApplication</code> 启动类在包的根目录下，配置类在子包下。就不需要使用 <code>@Import</code> 导入配置类，如果配置类在第三方的jar下，我们想要引入这个配置类，就需要 <code>@Import</code> 对其引入到工程中才能生效。因为这个时候配置类不在 Spring Boot 默认的扫描范围内。</p>
+</li>
+<li><p>默认组件名字就是全限定类名</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;User.class, ObjectMapper.class&#125;)</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-4-Conditional"><a href="#1-4-Conditional" class="headerlink" title="1.4 @Conditional"></a>1.4 @Conditional</h3><ul>
+<li>条件装配：满足Conditional指定的条件，则进行组件注入</li>
+<li>在SpringBoot底层中，很多自动注入的原理都是依靠 <code>@ConditionalOnMissingBean</code> 注解，进行是否需要自动装配的原则，在类上或者方法上标注这个注解，决定是否需要需要对此类进行生效</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ConditionalOnBean(Pet.class)</span> <span class="comment">//当容器中有 Pet类型 的组件时生效</span></span><br><span class="line"><span class="comment">//@ConditionalOnBean(name = &quot;tom&quot;) //当容器中有 名字为tom 的组件时生效</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">user</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setName(<span class="string">&quot;小明&quot;</span>);</span><br><span class="line">        user.setAge(<span class="number">18</span>);</span><br><span class="line">        user.setPet(pet());</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//@Bean(&quot;tomcat&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Pet <span class="title">pet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Pet(<span class="string">&quot;tomcat&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 返回ioc容器</span></span><br><span class="line">        ConfigurableApplicationContext run = SpringApplication.run(MainApplication.class, args);</span><br><span class="line">        <span class="comment">//是否包含组件</span></span><br><span class="line">        <span class="keyword">boolean</span> tomcat = run.containsBean(<span class="string">&quot;tomcat&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;容器中是否存在tomcat组件：&quot;</span> + tomcat);<span class="comment">//false</span></span><br><span class="line">        <span class="keyword">boolean</span> user = run.containsBean(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;容器中是否存在user组件：&quot;</span> + user);<span class="comment">//false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="二、原生配置文件引入"><a href="#二、原生配置文件引入" class="headerlink" title="二、原生配置文件引入"></a>二、原生配置文件引入</h2><h2 id="三、配置绑定"><a href="#三、配置绑定" class="headerlink" title="三、配置绑定"></a>三、配置绑定</h2>]]></content>
       <tags>
         <tag>springboot</tag>
       </tags>
@@ -920,100 +1011,6 @@
       </tags>
   </entry>
   <entry>
-    <title>spring中的依赖注入</title>
-    <url>/posts/45b64bd9/</url>
-    <content><![CDATA[<blockquote>
-<p>依赖注入：Dependency Injection</p>
-<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
-<p>依赖关系的管理：以后都交给spring来维护</p>
-<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
-<p>依赖关系的维护 就称之为依赖注入。</p>
-</blockquote>
-<span id="more"></span>
-
-
-
-<p>依赖注入：</p>
-<p>能注入的数据：有三类</p>
-<ul>
-<li><p>基本类型和String</p>
-</li>
-<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
-</li>
-<li><p>复杂类型/集合类型</p>
-</li>
-</ul>
-<p> 注入的方式：有三种</p>
-<ul>
-<li><p>第一种：使用构造函数提供</p>
-</li>
-<li><p>第二种：使用set方法提供（更常用的方式）</p>
-</li>
-<li><p>第三种：使用注解提供</p>
-</li>
-</ul>
-<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
-<li><p>使用的标签：<code>constructor-arg</code></p>
-</li>
-<li><p>标签出现的位置：<code>bean</code>标签内部</p>
-</li>
-<li><p>标签中的属性</p>
-<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
-<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
-<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p><code>value</code>：用于提供基本类型和String类型的数据</p>
-<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
-</li>
-<li><p>弊端：</p>
-<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
-<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
-</li>
-<li><p>出现的位置：bean标签的内部</p>
-</li>
-<li><p>标签的属性：</p>
-<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p>value：用于提供基本类型和String类型的数据</p>
-<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
-</li>
-<li><p>弊端：</p>
-<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
-<li>用于给List结构集合注入的标签：</li>
-</ul>
-<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
-<ul>
-<li>用于给Map集合结构注入的标签：</li>
-</ul>
-<p><code>map</code> 、<code>props</code></p>
-<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>spring</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>spring中基于xml的aop配置</title>
     <url>/posts/f21e4f2a/</url>
     <content><![CDATA[<blockquote>
@@ -1114,6 +1111,100 @@
 </li>
 </ul>
 ]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring中的依赖注入</title>
+    <url>/posts/45b64bd9/</url>
+    <content><![CDATA[<blockquote>
+<p>依赖注入：Dependency Injection</p>
+<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
+<p>依赖关系的管理：以后都交给spring来维护</p>
+<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
+<p>依赖关系的维护 就称之为依赖注入。</p>
+</blockquote>
+<span id="more"></span>
+
+
+
+<p>依赖注入：</p>
+<p>能注入的数据：有三类</p>
+<ul>
+<li><p>基本类型和String</p>
+</li>
+<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
+</li>
+<li><p>复杂类型/集合类型</p>
+</li>
+</ul>
+<p> 注入的方式：有三种</p>
+<ul>
+<li><p>第一种：使用构造函数提供</p>
+</li>
+<li><p>第二种：使用set方法提供（更常用的方式）</p>
+</li>
+<li><p>第三种：使用注解提供</p>
+</li>
+</ul>
+<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
+<li><p>使用的标签：<code>constructor-arg</code></p>
+</li>
+<li><p>标签出现的位置：<code>bean</code>标签内部</p>
+</li>
+<li><p>标签中的属性</p>
+<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
+<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
+<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p><code>value</code>：用于提供基本类型和String类型的数据</p>
+<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
+</li>
+<li><p>弊端：</p>
+<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
+<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
+</li>
+<li><p>出现的位置：bean标签的内部</p>
+</li>
+<li><p>标签的属性：</p>
+<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p>value：用于提供基本类型和String类型的数据</p>
+<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
+</li>
+<li><p>弊端：</p>
+<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
+<li>用于给List结构集合注入的标签：</li>
+</ul>
+<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
+<ul>
+<li>用于给Map集合结构注入的标签：</li>
+</ul>
+<p><code>map</code> 、<code>props</code></p>
+<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
       <tags>
         <tag>java</tag>
         <tag>spring</tag>
