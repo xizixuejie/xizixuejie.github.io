@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-05-10T12:11:46.223Z</updated>
+  <updated>2021-05-15T07:07:39.706Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -17,11 +17,45 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>SpringBoot特点</title>
+    <link href="http://example.com/posts/f98c6656/"/>
+    <id>http://example.com/posts/f98c6656/</id>
+    <published>2021-05-15T07:06:51.000Z</published>
+    <updated>2021-05-15T07:07:39.706Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;SpringBoot 依赖管理 和 自动配置 的特性&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="springboot" scheme="http://example.com/tags/springboot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot入门</title>
+    <link href="http://example.com/posts/3ce02997/"/>
+    <id>http://example.com/posts/3ce02997/</id>
+    <published>2021-05-15T05:55:51.000Z</published>
+    <updated>2021-05-15T05:59:26.640Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Spring Boot 是由 Pivotal 团队提供的全新框架，其设计目的是用来简化新 Spring 应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="springboot" scheme="http://example.com/tags/springboot/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Redis的数据类型和基本操作方法</title>
     <link href="http://example.com/posts/c3319727/"/>
     <id>http://example.com/posts/c3319727/</id>
     <published>2021-05-10T11:59:17.000Z</published>
-    <updated>2021-05-10T12:11:46.223Z</updated>
+    <updated>2021-05-11T02:44:13.227Z</updated>
     
     
     <summary type="html">&lt;p&gt;redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构&lt;/p&gt;</summary>

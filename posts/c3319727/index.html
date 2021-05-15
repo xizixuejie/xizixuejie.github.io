@@ -119,10 +119,11 @@
 </li>
 <li><p><strong>获取：</strong> </p>
 <ul>
-<li><code>hget key field</code> ： 获取指定的field对应的值<br>127.0.0.1:6379&gt; hget myhash username<br>“lisi”</li>
-<li><code>hgetall key</code> ：获取所有的field和value<br>127.0.0.1:6379&gt; hgetall myhash<br>-1) “username”<br>-2) “lisi”<br>-3) “password”</li>
+<li><code>hget key field</code> ： 获取指定的field对应的值<br>127.0.0.1:6379&gt; hget myhash username<br>“lisi”<ul>
+<li><code>hgetall key</code> ：获取所有的field和value<br>127.0.0.1:6379&gt; hgetall myhash<br>-1) “username”<br>-2) “lisi”<br>-3) “password”<br>-4) “123”</li>
 </ul>
-<p>-4) “123”</p>
+</li>
+</ul>
 </li>
 <li><p><strong>删除：</strong> <code>hdel key field</code><br>127.0.0.1:6379&gt; hdel myhash username<br>(integer) 1</p>
 </li>
@@ -250,6 +251,15 @@
 
    
   <nav class="article-nav">
+    
+      <a href="/posts/3ce02997/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            SpringBoot入门
+          
+        </div>
+      </a>
     
     
       <a href="/posts/a74be4d1/" class="article-nav-link">
