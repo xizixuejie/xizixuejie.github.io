@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-05-15T09:49:49.110Z</updated>
+  <updated>2021-05-16T03:13:08.781Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -20,8 +20,8 @@
     <title>SpringBoot的容器功能</title>
     <link href="http://example.com/posts/d88cfa76/"/>
     <id>http://example.com/posts/d88cfa76/</id>
-    <published>2021-05-15T09:49:55.000Z</published>
-    <updated>2021-05-15T09:49:49.110Z</updated>
+    <published>2021-05-16T03:13:55.000Z</published>
+    <updated>2021-05-16T03:13:08.781Z</updated>
     
     
     <summary type="html">&lt;p&gt;SpringBoot 的组件添加、原生配置文件引入和配置绑定&lt;/p&gt;</summary>
@@ -230,8 +230,25 @@
     <title>spring中基于xml的aop配置</title>
     <link href="http://example.com/posts/f21e4f2a/"/>
     <id>http://example.com/posts/f21e4f2a/</id>
+    <published>2021-01-21T12:47:17.000Z</published>
+    <updated>2021-08-17T05:49:16.830Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;注解aop&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>spring中基于xml的aop配置</title>
+    <link href="http://example.com/posts/f21e4f2a/"/>
+    <id>http://example.com/posts/f21e4f2a/</id>
     <published>2021-01-21T08:31:47.000Z</published>
-    <updated>2021-04-27T01:37:53.222Z</updated>
+    <updated>2021-08-17T05:48:55.901Z</updated>
     
     
     <summary type="html">&lt;blockquote&gt;
@@ -240,8 +257,6 @@
     
     
     
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
     
     <category term="spring" scheme="http://example.com/tags/spring/"/>
     

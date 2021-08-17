@@ -67,14 +67,14 @@
      
     <div class="article-meta">
       <a href="/posts/d88cfa76/" class="article-date">
-  <time datetime="2021-05-15T09:49:55.000Z" itemprop="datePublished">2021-05-15</time>
+  <time datetime="2021-05-16T03:13:55.000Z" itemprop="datePublished">2021-05-16</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.2k</span>
+            <span class="post-count">1.5k</span>
         </span>
     </span>
 
@@ -83,7 +83,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">5 分钟</span>
+            <span class="post-count">6 分钟</span>
         </span>
     </span>
 </div>
@@ -181,7 +181,36 @@
 
 
 
-<h2 id="二、原生配置文件引入"><a href="#二、原生配置文件引入" class="headerlink" title="二、原生配置文件引入"></a>二、原生配置文件引入</h2><h2 id="三、配置绑定"><a href="#三、配置绑定" class="headerlink" title="三、配置绑定"></a>三、配置绑定</h2> 
+<h2 id="二、原生配置文件引入"><a href="#二、原生配置文件引入" class="headerlink" title="二、原生配置文件引入"></a>二、原生配置文件引入</h2><h3 id="ImportResource"><a href="#ImportResource" class="headerlink" title="@ImportResource"></a>@ImportResource</h3><p>可以用来导入spring配置文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:beans.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>beans.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;zhangsan&quot;</span>  <span class="attr">class</span>=<span class="string">&quot;com.hzj.entity.User&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;zhangsan&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;lucy&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.hzj.entity.User&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;lucy&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;24&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ConfigurableApplicationContext run = SpringApplication.run(MainApplication.class, args);</span><br><span class="line">        <span class="keyword">boolean</span> zhangsan = run.containsBean(<span class="string">&quot;zhangsan&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;容器中是否存在zhangsan组件：&quot;</span> + zhangsan);<span class="comment">//true</span></span><br><span class="line">        <span class="keyword">boolean</span> lucy = run.containsBean(<span class="string">&quot;lucy&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;容器中是否存在lucy组件：&quot;</span> + lucy);<span class="comment">//true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、配置绑定"><a href="#三、配置绑定" class="headerlink" title="三、配置绑定"></a>三、配置绑定</h2><h3 id="3-1-ConfigurationProperties"><a href="#3-1-ConfigurationProperties" class="headerlink" title="3.1@ConfigurationProperties"></a>3.1@ConfigurationProperties</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Component</span><span class="comment">//只有在容器中的组件，才会拥有SpringBoot提供的强大功能</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(&quot;mycar&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String brand;</span><br><span class="line">    <span class="keyword">private</span> Integer price;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>application.yml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mycar:</span></span><br><span class="line">  <span class="attr">brand:</span> <span class="string">bwm</span></span><br><span class="line">  <span class="attr">price:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
+
+<p>HelloController.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Car car;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/car&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Car <span class="title">car</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> car;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>浏览器访问 <code>http://localhost:8080/car</code> ，结果：</p>
+<blockquote>
+<p>{“brand”:”bwm”,”price”:10000}</p>
+</blockquote>
+<h3 id="3-2-EnableConfigurationProperties"><a href="#3-2-EnableConfigurationProperties" class="headerlink" title="3.2 @EnableConfigurationProperties"></a>3.2 @EnableConfigurationProperties</h3><p>比如如果第三方的组件，不能使用 <code>@Component</code> 注册到容器中。</p>
+<p>可以在配置类上使用 <code>@EnableConfigurationProperties(value=&#123;class&lt;?&gt;[]&#125;)</code> 开启相关的配置绑定功能，并且把这个组件注册到容器中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableConfigurationProperties(Car.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyConfig</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3> 
       <!-- reward -->
       
     </div>
