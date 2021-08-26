@@ -227,11 +227,62 @@
   </entry>
   
   <entry>
-    <title>spring中基于xml的aop配置</title>
+    <title>spring中基于xml的声明式事务控制</title>
+    <link href="http://example.com/posts/6d837220/"/>
+    <id>http://example.com/posts/6d837220/</id>
+    <published>2021-01-22T07:07:20.000Z</published>
+    <updated>2021-08-20T00:40:50.629Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;spring中基于xml的声明式事务控制配置步骤&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JdbcTemplate的用法</title>
+    <link href="http://example.com/posts/ae289768/"/>
+    <id>http://example.com/posts/ae289768/</id>
+    <published>2021-01-22T05:47:17.000Z</published>
+    <updated>2021-08-20T00:40:58.894Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;JdbcTemplate的用法&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>转账案例演示事务问题</title>
+    <link href="http://example.com/posts/188ff67/"/>
+    <id>http://example.com/posts/188ff67/</id>
+    <published>2021-01-22T04:47:17.000Z</published>
+    <updated>2021-08-19T09:05:46.108Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;转账案例演示事务问题&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>spring中基于注解的aop配置</title>
     <link href="http://example.com/posts/f21e4f2a/"/>
     <id>http://example.com/posts/f21e4f2a/</id>
     <published>2021-01-21T12:47:17.000Z</published>
-    <updated>2021-08-17T05:49:16.830Z</updated>
+    <updated>2021-08-19T08:38:55.393Z</updated>
     
     
     <summary type="html">&lt;p&gt;注解aop&lt;/p&gt;</summary>
@@ -275,9 +326,9 @@
     
     
     
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
     <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
     
   </entry>
   
@@ -300,9 +351,9 @@
     
     
     
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
     <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
     
   </entry>
   
@@ -319,9 +370,9 @@
     
     
     
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
     <category term="spring" scheme="http://example.com/tags/spring/"/>
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
     
   </entry>
   
@@ -342,50 +393,6 @@
     
     
     <category term="java" scheme="http://example.com/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>反射的基本用法</title>
-    <link href="http://example.com/posts/b6639a47/"/>
-    <id>http://example.com/posts/b6639a47/</id>
-    <published>2021-01-02T12:20:38.000Z</published>
-    <updated>2021-04-26T10:44:13.339Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;反射的好处；获取Class对象的方式；Class对象的功能；一个小案例&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL数据库增删改查SQL语句(整理集合)</title>
-    <link href="http://example.com/posts/d38dc2e6/"/>
-    <id>http://example.com/posts/d38dc2e6/</id>
-    <published>2020-10-21T12:50:57.000Z</published>
-    <updated>2021-04-26T10:44:13.339Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;查看数据库&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;show databases; &lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;使用数据库&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;use 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;创建数据库&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;CREATE DATABASE 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
-
-&lt;p&gt;删除数据库&lt;/p&gt;
-&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;DROP DATABASE 数据库名;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
-    
-    
-    
-    
-    <category term="mysql" scheme="http://example.com/tags/mysql/"/>
     
   </entry>
   
