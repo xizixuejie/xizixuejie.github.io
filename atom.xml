@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-08-17T05:51:42.662Z</updated>
+  <updated>2021-11-05T03:35:14.075Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringBoot的事件监听</title>
+    <link href="http://example.com/posts/59d95f97/"/>
+    <id>http://example.com/posts/59d95f97/</id>
+    <published>2021-11-05T03:32:22.000Z</published>
+    <updated>2021-11-05T03:35:14.075Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;spring boot中事件的使用和发布&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="springboot" scheme="http://example.com/tags/springboot/"/>
+    
+  </entry>
   
   <entry>
     <title>SpringBoot的容器功能</title>
@@ -371,26 +388,6 @@
     
     
     <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>注解的基本用法</title>
-    <link href="http://example.com/posts/d2d18c1a/"/>
-    <id>http://example.com/posts/d2d18c1a/</id>
-    <published>2021-01-03T01:41:53.000Z</published>
-    <updated>2021-04-27T01:58:45.813Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;注解：说明程序的。给计算机看的&lt;/p&gt;
-&lt;p&gt;注释：用文字描述程序的。给程序员看的&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
     
     <category term="java" scheme="http://example.com/tags/java/"/>
     
