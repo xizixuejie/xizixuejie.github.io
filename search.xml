@@ -83,6 +83,103 @@
       </tags>
   </entry>
   <entry>
+    <title>Redis的数据类型和基本操作方法</title>
+    <url>/posts/c3319727/</url>
+    <content><![CDATA[<p>redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构</p>
+<span id="more"></span>
+
+<h2 id="一、Redis的数据结构"><a href="#一、Redis的数据结构" class="headerlink" title="一、Redis的数据结构"></a>一、Redis的数据结构</h2><ol>
+<li>字符串类型 <code>string</code></li>
+<li>哈希类型 <code>hash : map</code> 格式 </li>
+<li>列表类型 <code>list : linkedlist</code> 格式，支持重复元素</li>
+<li>集合类型 <code>set</code> : 不允许重复元素</li>
+<li>有序集合类型 <code>sortedset</code> : 不允许重复元素，且元素有顺序</li>
+</ol>
+<h2 id="二、操作方法"><a href="#二、操作方法" class="headerlink" title="二、操作方法"></a>二、操作方法</h2><h3 id="2-1-字符串类型-string"><a href="#2-1-字符串类型-string" class="headerlink" title="2.1 字符串类型 string"></a>2.1 字符串类型 string</h3><ol>
+<li><strong>存储：</strong> <code>set key value</code><br>127.0.0.1:6379&gt; set username zhangsan<br>OK</li>
+<li><strong>获取：</strong> <code>get key</code><br>127.0.0.1:6379&gt; get username<br>“zhangsan”</li>
+<li><strong>删除：</strong> <code>del key</code><br>127.0.0.1:6379&gt; del age<br>(integer) 1</li>
+</ol>
+<h3 id="2-2-哈希类型-hash"><a href="#2-2-哈希类型-hash" class="headerlink" title="2.2 哈希类型 hash"></a>2.2 哈希类型 hash</h3><ol>
+<li><p><strong>存储：</strong> <code>hset key field value</code><br>127.0.0.1:6379&gt; hset myhash username lisi<br>  (integer) 1</p>
+<p>127.0.0.1:6379&gt; hset myhash password 123<br>  (integer) 1</p>
+</li>
+<li><p><strong>获取：</strong> </p>
+<ul>
+<li><code>hget key field</code> ： 获取指定的field对应的值<br>127.0.0.1:6379&gt; hget myhash username<br>“lisi”<ul>
+<li><code>hgetall key</code> ：获取所有的field和value<br>127.0.0.1:6379&gt; hgetall myhash<br>-1) “username”<br>-2) “lisi”<br>-3) “password”<br>-4) “123”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>删除：</strong> <code>hdel key field</code><br>127.0.0.1:6379&gt; hdel myhash username<br>(integer) 1</p>
+</li>
+</ol>
+<h3 id="2-3-列表类型-list"><a href="#2-3-列表类型-list" class="headerlink" title="2.3 列表类型 list"></a>2.3 列表类型 list</h3><blockquote>
+<p>可以添加一个元素到列表的头部（左边）或者尾部（右边）</p>
+</blockquote>
+<ol>
+<li><p><strong>添加：</strong></p>
+<ul>
+<li><p><code>lpush key value</code> ：将元素加入列表左表</p>
+</li>
+<li><p><code>rpush key value</code> ：将元素加入列表右边</p>
+<p>127.0.0.1:6379&gt; lpush myList a<br>(integer) 1</p>
+<p>127.0.0.1:6379&gt; lpush myList b<br>(integer) 2</p>
+<p>127.0.0.1:6379&gt; rpush myList c<br>(integer) 3</p>
+</li>
+</ul>
+</li>
+<li><p><strong>获取：</strong><code>lrange key start end</code>  ：范围获取<br>127.0.0.1:6379&gt; lrange myList 0 -1<br>-1) “b”<br>-2) “a”<br>-3) “c”</p>
+</li>
+<li><p><strong>删除：</strong></p>
+<ul>
+<li><code>lpop key</code>： 删除列表最左边的元素，并将元素返回</li>
+<li><code>rpop key</code>： 删除列表最右边的元素，并将元素返回</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-4-集合类型-set"><a href="#2-4-集合类型-set" class="headerlink" title="2.4 集合类型 set"></a>2.4 集合类型 set</h3><blockquote>
+<p>set ： 不允许重复元素</p>
+</blockquote>
+<ol>
+<li><p><strong>存储：</strong><code>sadd key value</code><br> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 0</p>
+</li>
+<li><p><strong>获取：</strong><code>smembers key</code> ：获取set集合中所有元素<br> 127.0.0.1:6379&gt; smembers myset</p>
+<ol>
+<li>“a”</li>
+</ol>
+</li>
+<li><p><strong>删除：</strong><code>srem key value</code> ：删除set集合中的某个元素<br> 127.0.0.1:6379&gt; srem myset a<br> (integer) 1</p>
+</li>
+</ol>
+<h3 id="2-5-有序集合类型-sortedset"><a href="#2-5-有序集合类型-sortedset" class="headerlink" title="2.5 有序集合类型 sortedset"></a>2.5 有序集合类型 sortedset</h3><blockquote>
+<p>sortedset：不允许重复元素，且元素有顺序.每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</p>
+</blockquote>
+<ol>
+<li><p><strong>存储：</strong><code>zadd key score value</code><br> 127.0.0.1:6379&gt; zadd mysort 60 zhangsan<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; zadd mysort 50 lisi<br> (integer) 1</p>
+<p> 127.0.0.1:6379&gt; zadd mysort 80 wangwu<br> (integer) 1</p>
+</li>
+<li><p><strong>获取：</strong><code>zrange key start end [withscores]</code></p>
+<p>  127.0.0.1:6379&gt; zrange mysort 0 -1<br>  -1) “lisi”<br>  -2) “zhangsan”<br>  -3) “wangwu”</p>
+<p>  127.0.0.1:6379&gt; zrange mysort 0 -1 withscores<br>  -1) “zhangsan”<br>  -2) “60”<br>  -3) “wangwu”<br>  -4) “80”<br>  -5) “lisi”<br>  -6) “500”</p>
+</li>
+<li><p><strong>删除：</strong><code>zrem key value</code><br>  127.0.0.1:6379&gt; zrem mysort lisi<br>  (integer) 1</p>
+</li>
+</ol>
+<h3 id="2-6-通用命令"><a href="#2-6-通用命令" class="headerlink" title="2.6 通用命令"></a>2.6 通用命令</h3><ol>
+<li><code>keys *</code> ：查询所有的键</li>
+<li><code>type key</code> ： 获取键对应的value的类型</li>
+<li><code>del key</code>：删除指定的key value</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>redis</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>JdbcTemplate的用法</title>
     <url>/posts/ae289768/</url>
     <content><![CDATA[<p>JdbcTemplate的用法</p>
@@ -111,6 +208,173 @@
 ]]></content>
       <tags>
         <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL数据库增删改查SQL语句(整理集合)</title>
+    <url>/posts/d38dc2e6/</url>
+    <content><![CDATA[<p>查看数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">show databases; </span><br></pre></td></tr></table></figure>
+
+<p>使用数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use 数据库名;</span><br></pre></td></tr></table></figure>
+
+<p>创建数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE 数据库名;</span><br></pre></td></tr></table></figure>
+
+<p>删除数据库</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP DATABASE 数据库名;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>创建表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create table 表名(</span><br><span class="line">    列名1 类型(长度) [约束],</span><br><span class="line">    列名2 类型(长度) [约束],</span><br><span class="line">    ……</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>长度区别<br>int类型带长度：不影响存取值，即使设定的值超出了长度的范畴，也能存，如果没有达到设定的长度，则使用空格自动填充到设定的长度<br>char类型：不可变字符，设定的长度就是规定当前字段能存的数据的最大长度，若超出长度，则会报错，若没有达到长度，使用空格填充到设定的长度<br>varchar：可变字符，设定的长度同样是规定当前字段能存的数据的最大长度，若超出长度，则会报错，若没有达到长度，不会使用空格填充，实际多长就是多长</p>
+</blockquote>
+<p>删除表</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP TABLE 表名;</span><br></pre></td></tr></table></figure>
+
+<p>表约束</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.非空约束    NOT NULL</span><br><span class="line">2.默认值约束  DEFAULT &#39;男&#39;</span><br><span class="line">3.唯一约束    UNIQUE</span><br><span class="line">4.主键约束    PRIMARY KEY</span><br></pre></td></tr></table></figure>
+
+<p>查看表结构</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DESC 表名</span><br></pre></td></tr></table></figure>
+
+<p>修改表<br>修改列名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  change  列名  新列名 类型;</span><br></pre></td></tr></table></figure>
+
+<p>修改列类型</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  change 列名  列名  新类型;</span><br></pre></td></tr></table></figure>
+
+<p>修改列类型</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  modify  列名  新类型;</span><br></pre></td></tr></table></figure>
+
+<p><strong>==============================数据查询-单表=================================</strong></p>
+<p>查询表中全部信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表名;</span><br></pre></td></tr></table></figure>
+
+<p>查询表中指定列的信息</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列1,列2 from 表名;</span><br></pre></td></tr></table></figure>
+
+<p>语句的执行顺序：from—&gt;select</p>
+<p>数据去重</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select distinct 列…. From 表名;</span><br></pre></td></tr></table></figure>
+
+<p>拼接结果</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select concat(列1,列2) from 表名;</span><br></pre></td></tr></table></figure>
+
+<p>运算符优先级：<br>1.乘法和除法的优先级高于加法和减法<br>2.同级运算的顺序是从左到右<br>3.表达式中使用”括号”可强行改变优先级的运算顺序</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列1[+-*&#x2F;]列2 from 表名;</span><br></pre></td></tr></table></figure>
+
+<p>设置别名(注意：关键字as可以省略)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列 as 别名 from 表名;   </span><br><span class="line">select 列 别名 from 表名;      </span><br></pre></td></tr></table></figure>
+
+<p> 语句的执行顺序：from—&gt;select</p>
+<p>条件查询</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列… from 表名 where 条件;  </span><br></pre></td></tr></table></figure>
+
+<p>条件中比较运算符：( 等于:=  大于:&gt;  大于等于:&gt;=  小于:&lt;  小于等于:&lt;=  不等于:!= 或 &lt;&gt;  )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列  比较运算符  值;</span><br></pre></td></tr></table></figure>
+
+<p>注意:字符串、日期需使用单引号括起来<br>语句的执行顺序：from—&gt;where—&gt;select</p>
+<p>逻辑运算符( 并且:and 或 &amp;&amp;  或:or   非:not 或 !   )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 条件1  逻辑运算符  条件2;  </span><br><span class="line">where not 条件; </span><br></pre></td></tr></table></figure>
+
+<p>范围查询</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 between 条件1  and 条件2;          &#x2F;&#x2F;列在这个区间的值</span><br><span class="line">where 列 not between 条件1 and 条件2;    &#x2F;&#x2F;不在这个区间</span><br><span class="line">where !( 列 between 条件1 and 条件2 );     &#x2F;&#x2F;同样表示不在这个区间</span><br></pre></td></tr></table></figure>
+
+<p>集合查询( 判断列的值是否在指定的集合中 )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 in(值1,值2);          &#x2F;&#x2F;列中的数据是in后的值里面的</span><br><span class="line">where 列 not in(值1,值2);   &#x2F;&#x2F;不是in中指定值的数据</span><br></pre></td></tr></table></figure>
+
+<p>NULL值查询( 注意：列中值为null不能使用=去查询 )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 is null;  &#x2F;&#x2F;查询列中值为null的数据</span><br></pre></td></tr></table></figure>
+
+<p>模糊查询<br>%：表示0到多个字符，示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 like &#39;%0&#39;;   &#x2F;&#x2F;表示以0结尾</span><br><span class="line">where 列 like  &#39;0%&#39;;   &#x2F;&#x2F;表示以0开头</span><br><span class="line">where 列 like  &#39;%0%&#39;;   &#x2F;&#x2F;表示数据中包含0</span><br></pre></td></tr></table></figure>
+
+<p>_：表示一个字符，可多次使用，示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 like &#39;%0_&#39;;   &#x2F;&#x2F;数据结尾第二位是0</span><br></pre></td></tr></table></figure>
+
+<p>结果排序( 对查询出的结果按照一列或多列进行升序还是降序排列 升序:asc  降序:desc   注意：不能使用中文的别名排序)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 条件 order by 列 [asc&#x2F;desc]</span><br></pre></td></tr></table></figure>
+
+<p>语句的执行顺序：from—&gt;where—&gt;select—&gt;order by</p>
+<p>分页查询( beginIndex:表示从第多少条数据开始  pageSize:表示每页显示的数据条数 )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where [条件] limit beginIndex,pageSize;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ex：每页显示3条数据<br>第一页: SELECT * FROM 表名 LIMIT 0,3   –0,1,2<br>第二页: SELECT * FROM 表名 LIMIT 3,3   –3,4,5<br>第三页: SELECT * FROM 表名 LIMIT 6,3   –6,7,8<br>第四页: SELECT * FROM 表名 LIMIT 9,3   –9,10,11<br> ……<br>第七页: SELECT * FROM 表名 LIMIT 18,3  –18,19,20</p>
+</blockquote>
+<p>beginIndex公式：(当前页数-1)*pageSize</p>
+<p>聚集函数( 作用于一组数据，并对一组数据返回一个值 )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">COUNT:统计结果记录数，若统计的是列，列中为Null，那么count将不会计算值</span><br><span class="line">MAX:  统计计算最大值</span><br><span class="line">MIN:  统计计算最小值</span><br><span class="line">SUM:  统计计算求和</span><br><span class="line">AVG:  统计计算平均值</span><br></pre></td></tr></table></figure>
+
+<p>分组函数( 注意：如果要对分组后的数据进行筛选，那么必须使用having关键字，条件写在having后 )</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 聚集函数 from 表名 where [条件] group by 列 having 分组后的条件</span><br></pre></td></tr></table></figure>
+
+<p>语句的执行顺序：FROM—&gt; WHERE—&gt;group by—-&gt;Having—&gt;SELECT–&gt;ORDER BY</p>
+<hr>
+<p><strong>Where和having的区别：</strong><br>Where: 先过滤已有的数据(数据是已经存在的),在进行分组,在聚集计算<br>Having:先分组,在对每组进行计算,根据得到结果在过滤(分组把数据算出之后，在过滤)<br>注意：使用having的时候，它是可以使用别名的</p>
+<p><strong>===============================数据查询-多表===============================</strong><br>交叉连接:又名笛卡尔积，使用交叉连接会产生笛卡尔积<br>假设集合A={a, b}，集合B={0, 1, 2}，则两个集合的笛卡尔积为{(a, 0), (a, 1), (a, 2), (b, 0), (b, 1), (b, 2)}。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select *  from 表1,表2</span><br></pre></td></tr></table></figure>
+
+<p>内连接：过滤为空的数据(查询的实际上是两张表数据的交集部分)   目的 ==》解决笛卡尔积现象，正确查询了需要的数据</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1,表2  where 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;隐式内连接,使用where条件消除笛卡尔积</span><br><span class="line">select * from 表1 [inner] join 表2 on 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;显式内连接,如果是多张表，则一直在join..on后依次添加join..on即可,inner关键字可被省略</span><br></pre></td></tr></table></figure>
+
+<p>外连接：左外连接、右外连接、全外连接<br>左外连接:以左边表为主，返回左边表中所有数据，若右表中无数据，则显示为NULL，请参考实际查询结果来理解</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1 left [outer] join 表2 on 表1.字段&#x3D;表2.字段;   &#x2F;&#x2F;表1为左表，表2为右表,outer关键字可被省略</span><br></pre></td></tr></table></figure>
+
+<p>右外连接：以右边表为主，返回右表中所有数据，若左表中无数据，则显示为NULL，结合实际查询结果来理解</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1 right [outer] join 表2 on 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;表1为左表，表2为右表,outer关键字可被省略</span><br></pre></td></tr></table></figure>
+
+<p>全外连接：返回涉及的多表中的所有数据，MYSQL中不支持该查询，仅限了解自连接：单表当作多表查询，直白的讲就是一张表中数据含有多种关系，使用多表查询的语法，来查询一张表，查询过程中一定要使用别名<br>多用在分类数据、省市县分类数据、权限…</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 表1.字段1,表2.字段2 from 表名 as 表1,表名 as 表2 where 表1.字段1&#x3D;表2.字段2</span><br></pre></td></tr></table></figure>
+
+<p>子查询：将一个查询结果作为另一个查询的对象，直白的讲就是SQL语句嵌套</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from (select * from 表名) as 别名</span><br><span class="line">select * from where 条件-&gt;条件中包含查询语句</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：1.查询结果的虚拟表必须取别名<br>      2.字段与关键字一样，冲突时，需要给字段名加``,(Esc键下面、1的左边)<br>      3.如果给虚拟结果表中的字段取了别名，则对虚拟结果表查询时，应该用 表别名.虚拟表字段别名</p>
+</blockquote>
+<p><strong>===============================插入数据===============================</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into 表名(字段1,字段2..) values(值1,值2…);    </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意： 1.如果插入的表中的主键是自增类型的，可以不用插入值<br>       2.如果主键是非自增 ，插入的数据则是填补主键字段值空余的值<br>       3.如果主键设置了自动递增，会从主键字段最大值开始插入数据</p>
+</blockquote>
+<p>其他插入方式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into 表名(字段1,字段2) values(值1,值2),(值1,值2);     &#x2F;&#x2F;插入多条数据【MYSQL】</span><br><span class="line">insert into 表名 values(值1,值2);                    &#x2F;&#x2F;针对全表所有字段进行插入操作</span><br><span class="line">insert into 表名(字段) select 字段 from 表2;         &#x2F;&#x2F;查询结果插入</span><br><span class="line">insert into 表名 select 字段 from 表2;               &#x2F;&#x2F;查询结果，全表插入</span><br></pre></td></tr></table></figure>
+
+<p><strong>===============================修改数据===============================</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">update 表 set 字段&#x3D;值 where 条件;  &#x2F;&#x2F;带条件修改指定数据，否则修改全表</span><br></pre></td></tr></table></figure>
+
+<p><strong>===============================删除数据===============================</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">delete from 表 where 条件;  &#x2F;&#x2F;删除数据带条件指定数据，否则删除全表数据</span><br></pre></td></tr></table></figure>
+
+<p><strong>===============================数据备份===============================</strong></p>
+<p>在命令行窗口进行，若操作系统版本高，则使用管理员模式<br>导出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysqldump -u账户 -p密码 数据库名称&gt;脚本文件存储地</span><br></pre></td></tr></table></figure>
+
+<p>ex:     mysqldump -uroot -proot jdbcdemo&gt; C:/shop_bak.sql<br>导入：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql -u账户 -p密码 数据库名称&lt; 脚本文件存储地址</span><br></pre></td></tr></table></figure>
+
+<p>ex:     mysql -uroot -proot jdbcdemo&lt; C:/shop_bak.sql<br>使用可视化导入导出：<br>Navicat工具的导入和导出/Navicat工具的备份和还原</p>
+<p><strong>===============================数据索引===============================</strong><br>索引的作用相当于图书的目录，可以根据目录中的页码快速找到所需的内容。</p>
+<blockquote>
+<p>什么列适合建索引？？<br>1.表的主键、外键必须有索引；<br>2.数据量超过30000的表应该有索引；<br>3.经常与其他表进行连接的表，在连接字段上应该建立索引；<br>4.经常出现在Where子句中的字段，特别是大表的字段，应该建立索引；<br>5.索引应该建在选择性高的字段上；<br>6.索引应该建在小字段上，对于大的文本字段甚至超长字段，不要建索引； </p>
+</blockquote>
+<p>sql语句创建和删除索引：<br>创建索引: </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE INDEX 索引名称 ON 表名 (列名)</span><br></pre></td></tr></table></figure>
+
+<p>删除索引:<br>方式一：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP INDEX 索引名 ON 表名 </span><br></pre></td></tr></table></figure>
+
+<p>方式二:  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE 表名 DROP INDEX 索引名</span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>mysql</tag>
       </tags>
   </entry>
   <entry>
@@ -451,525 +715,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SpringBoot入门</title>
-    <url>/posts/3ce02997/</url>
-    <content><![CDATA[<p>Spring Boot 是由 Pivotal 团队提供的全新框架，其设计目的是用来简化新 Spring 应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。</p>
-<span id="more"></span>
-
-
-
-<h2 id="一、系统要求"><a href="#一、系统要求" class="headerlink" title="一、系统要求"></a>一、系统要求</h2><ul>
-<li>Java 8+</li>
-<li>Maven 3.3+</li>
-</ul>
-<h2 id="二、快速入门"><a href="#二、快速入门" class="headerlink" title="二、快速入门"></a>二、快速入门</h2><h3 id="2-1-创建maven工程"><a href="#2-1-创建maven工程" class="headerlink" title="2.1 创建maven工程"></a>2.1 创建maven工程</h3><h3 id="2-2-引入依赖"><a href="#2-2-引入依赖" class="headerlink" title="2.2 引入依赖"></a>2.2 引入依赖</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--web相关的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-3-创建主程序"><a href="#2-3-创建主程序" class="headerlink" title="2.3 创建主程序"></a>2.3 创建主程序</h3><ul>
-<li>MainApplication.java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span><span class="comment">//这是一个springboot应用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(MainApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-4-编写业务"><a href="#2-4-编写业务" class="headerlink" title="2.4 编写业务"></a>2.4 编写业务</h3><ul>
-<li>HelloController.java</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello springboot2!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-5-测试"><a href="#2-5-测试" class="headerlink" title="2.5 测试"></a>2.5 测试</h3><ol>
-<li><p>直接运行MainApplication.java</p>
-</li>
-<li><p>浏览器访问 <code>http://localhost:8080/hello</code></p>
-</li>
-<li><p>响应结果：</p>
-</li>
-</ol>
-<blockquote>
-<p>hello springboot2!</p>
-</blockquote>
-<h3 id="2-6-简化配置"><a href="#2-6-简化配置" class="headerlink" title="2.6 简化配置"></a>2.6 简化配置</h3><ul>
-<li>可以在 <code>application.properties</code> 或者 <code>application.yml</code> 文件内中指定各种属性</li>
-<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties">常见的Spring Boot属性列表以及对使用它们的基础类的引用</a></li>
-</ul>
-<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改端口号</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">80</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-7-简化部署"><a href="#2-7-简化部署" class="headerlink" title="2.7 简化部署"></a>2.7 简化部署</h3><blockquote>
-<p>创建一个可以在生产环境中运行的完全独立的可执行jar文件。可执行jar（有时称为 “fat jars”）是包含已编译类以及代码需要运行的所有jar依赖项的归档文件。</p>
-</blockquote>
-<p>要创建可执行jar，需要将添加 <code>spring-boot-maven-plugin</code> 到 <code>pom.xml</code> 。为此，在 <code>dependencies</code> 部分下方插入以下行：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>保存 <code>pom.xml</code> 然后在终端运行 <code>mvn package</code></p>
-<p>在 <code>target</code> 目录下，有一个 <code>springboot01-hello-world-0.0.1-SNAPSHOT.jar</code></p>
-<p>使用 <code>java -jar</code> 命令运行该程序</p>
-]]></content>
-      <tags>
-        <tag>springboot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL数据库增删改查SQL语句(整理集合)</title>
-    <url>/posts/d38dc2e6/</url>
-    <content><![CDATA[<p>查看数据库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">show databases; </span><br></pre></td></tr></table></figure>
-
-<p>使用数据库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">use 数据库名;</span><br></pre></td></tr></table></figure>
-
-<p>创建数据库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE DATABASE 数据库名;</span><br></pre></td></tr></table></figure>
-
-<p>删除数据库</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP DATABASE 数据库名;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>创建表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create table 表名(</span><br><span class="line">    列名1 类型(长度) [约束],</span><br><span class="line">    列名2 类型(长度) [约束],</span><br><span class="line">    ……</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>长度区别<br>int类型带长度：不影响存取值，即使设定的值超出了长度的范畴，也能存，如果没有达到设定的长度，则使用空格自动填充到设定的长度<br>char类型：不可变字符，设定的长度就是规定当前字段能存的数据的最大长度，若超出长度，则会报错，若没有达到长度，使用空格填充到设定的长度<br>varchar：可变字符，设定的长度同样是规定当前字段能存的数据的最大长度，若超出长度，则会报错，若没有达到长度，不会使用空格填充，实际多长就是多长</p>
-</blockquote>
-<p>删除表</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP TABLE 表名;</span><br></pre></td></tr></table></figure>
-
-<p>表约束</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.非空约束    NOT NULL</span><br><span class="line">2.默认值约束  DEFAULT &#39;男&#39;</span><br><span class="line">3.唯一约束    UNIQUE</span><br><span class="line">4.主键约束    PRIMARY KEY</span><br></pre></td></tr></table></figure>
-
-<p>查看表结构</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DESC 表名</span><br></pre></td></tr></table></figure>
-
-<p>修改表<br>修改列名</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  change  列名  新列名 类型;</span><br></pre></td></tr></table></figure>
-
-<p>修改列类型</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  change 列名  列名  新类型;</span><br></pre></td></tr></table></figure>
-
-<p>修改列类型</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Alter table 表名  modify  列名  新类型;</span><br></pre></td></tr></table></figure>
-
-<p><strong>==============================数据查询-单表=================================</strong></p>
-<p>查询表中全部信息</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表名;</span><br></pre></td></tr></table></figure>
-
-<p>查询表中指定列的信息</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列1,列2 from 表名;</span><br></pre></td></tr></table></figure>
-
-<p>语句的执行顺序：from—&gt;select</p>
-<p>数据去重</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select distinct 列…. From 表名;</span><br></pre></td></tr></table></figure>
-
-<p>拼接结果</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select concat(列1,列2) from 表名;</span><br></pre></td></tr></table></figure>
-
-<p>运算符优先级：<br>1.乘法和除法的优先级高于加法和减法<br>2.同级运算的顺序是从左到右<br>3.表达式中使用”括号”可强行改变优先级的运算顺序</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列1[+-*&#x2F;]列2 from 表名;</span><br></pre></td></tr></table></figure>
-
-<p>设置别名(注意：关键字as可以省略)</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列 as 别名 from 表名;   </span><br><span class="line">select 列 别名 from 表名;      </span><br></pre></td></tr></table></figure>
-
-<p> 语句的执行顺序：from—&gt;select</p>
-<p>条件查询</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 列… from 表名 where 条件;  </span><br></pre></td></tr></table></figure>
-
-<p>条件中比较运算符：( 等于:=  大于:&gt;  大于等于:&gt;=  小于:&lt;  小于等于:&lt;=  不等于:!= 或 &lt;&gt;  )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列  比较运算符  值;</span><br></pre></td></tr></table></figure>
-
-<p>注意:字符串、日期需使用单引号括起来<br>语句的执行顺序：from—&gt;where—&gt;select</p>
-<p>逻辑运算符( 并且:and 或 &amp;&amp;  或:or   非:not 或 !   )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 条件1  逻辑运算符  条件2;  </span><br><span class="line">where not 条件; </span><br></pre></td></tr></table></figure>
-
-<p>范围查询</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 between 条件1  and 条件2;          &#x2F;&#x2F;列在这个区间的值</span><br><span class="line">where 列 not between 条件1 and 条件2;    &#x2F;&#x2F;不在这个区间</span><br><span class="line">where !( 列 between 条件1 and 条件2 );     &#x2F;&#x2F;同样表示不在这个区间</span><br></pre></td></tr></table></figure>
-
-<p>集合查询( 判断列的值是否在指定的集合中 )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 in(值1,值2);          &#x2F;&#x2F;列中的数据是in后的值里面的</span><br><span class="line">where 列 not in(值1,值2);   &#x2F;&#x2F;不是in中指定值的数据</span><br></pre></td></tr></table></figure>
-
-<p>NULL值查询( 注意：列中值为null不能使用=去查询 )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 is null;  &#x2F;&#x2F;查询列中值为null的数据</span><br></pre></td></tr></table></figure>
-
-<p>模糊查询<br>%：表示0到多个字符，示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 like &#39;%0&#39;;   &#x2F;&#x2F;表示以0结尾</span><br><span class="line">where 列 like  &#39;0%&#39;;   &#x2F;&#x2F;表示以0开头</span><br><span class="line">where 列 like  &#39;%0%&#39;;   &#x2F;&#x2F;表示数据中包含0</span><br></pre></td></tr></table></figure>
-
-<p>_：表示一个字符，可多次使用，示例：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 列 like &#39;%0_&#39;;   &#x2F;&#x2F;数据结尾第二位是0</span><br></pre></td></tr></table></figure>
-
-<p>结果排序( 对查询出的结果按照一列或多列进行升序还是降序排列 升序:asc  降序:desc   注意：不能使用中文的别名排序)</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where 条件 order by 列 [asc&#x2F;desc]</span><br></pre></td></tr></table></figure>
-
-<p>语句的执行顺序：from—&gt;where—&gt;select—&gt;order by</p>
-<p>分页查询( beginIndex:表示从第多少条数据开始  pageSize:表示每页显示的数据条数 )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">where [条件] limit beginIndex,pageSize;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>ex：每页显示3条数据<br>第一页: SELECT * FROM 表名 LIMIT 0,3   –0,1,2<br>第二页: SELECT * FROM 表名 LIMIT 3,3   –3,4,5<br>第三页: SELECT * FROM 表名 LIMIT 6,3   –6,7,8<br>第四页: SELECT * FROM 表名 LIMIT 9,3   –9,10,11<br> ……<br>第七页: SELECT * FROM 表名 LIMIT 18,3  –18,19,20</p>
-</blockquote>
-<p>beginIndex公式：(当前页数-1)*pageSize</p>
-<p>聚集函数( 作用于一组数据，并对一组数据返回一个值 )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">COUNT:统计结果记录数，若统计的是列，列中为Null，那么count将不会计算值</span><br><span class="line">MAX:  统计计算最大值</span><br><span class="line">MIN:  统计计算最小值</span><br><span class="line">SUM:  统计计算求和</span><br><span class="line">AVG:  统计计算平均值</span><br></pre></td></tr></table></figure>
-
-<p>分组函数( 注意：如果要对分组后的数据进行筛选，那么必须使用having关键字，条件写在having后 )</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 聚集函数 from 表名 where [条件] group by 列 having 分组后的条件</span><br></pre></td></tr></table></figure>
-
-<p>语句的执行顺序：FROM—&gt; WHERE—&gt;group by—-&gt;Having—&gt;SELECT–&gt;ORDER BY</p>
-<hr>
-<p><strong>Where和having的区别：</strong><br>Where: 先过滤已有的数据(数据是已经存在的),在进行分组,在聚集计算<br>Having:先分组,在对每组进行计算,根据得到结果在过滤(分组把数据算出之后，在过滤)<br>注意：使用having的时候，它是可以使用别名的</p>
-<p><strong>===============================数据查询-多表===============================</strong><br>交叉连接:又名笛卡尔积，使用交叉连接会产生笛卡尔积<br>假设集合A={a, b}，集合B={0, 1, 2}，则两个集合的笛卡尔积为{(a, 0), (a, 1), (a, 2), (b, 0), (b, 1), (b, 2)}。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select *  from 表1,表2</span><br></pre></td></tr></table></figure>
-
-<p>内连接：过滤为空的数据(查询的实际上是两张表数据的交集部分)   目的 ==》解决笛卡尔积现象，正确查询了需要的数据</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1,表2  where 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;隐式内连接,使用where条件消除笛卡尔积</span><br><span class="line">select * from 表1 [inner] join 表2 on 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;显式内连接,如果是多张表，则一直在join..on后依次添加join..on即可,inner关键字可被省略</span><br></pre></td></tr></table></figure>
-
-<p>外连接：左外连接、右外连接、全外连接<br>左外连接:以左边表为主，返回左边表中所有数据，若右表中无数据，则显示为NULL，请参考实际查询结果来理解</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1 left [outer] join 表2 on 表1.字段&#x3D;表2.字段;   &#x2F;&#x2F;表1为左表，表2为右表,outer关键字可被省略</span><br></pre></td></tr></table></figure>
-
-<p>右外连接：以右边表为主，返回右表中所有数据，若左表中无数据，则显示为NULL，结合实际查询结果来理解</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from 表1 right [outer] join 表2 on 表1.字段&#x3D;表2.字段;  &#x2F;&#x2F;表1为左表，表2为右表,outer关键字可被省略</span><br></pre></td></tr></table></figure>
-
-<p>全外连接：返回涉及的多表中的所有数据，MYSQL中不支持该查询，仅限了解自连接：单表当作多表查询，直白的讲就是一张表中数据含有多种关系，使用多表查询的语法，来查询一张表，查询过程中一定要使用别名<br>多用在分类数据、省市县分类数据、权限…</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select 表1.字段1,表2.字段2 from 表名 as 表1,表名 as 表2 where 表1.字段1&#x3D;表2.字段2</span><br></pre></td></tr></table></figure>
-
-<p>子查询：将一个查询结果作为另一个查询的对象，直白的讲就是SQL语句嵌套</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from (select * from 表名) as 别名</span><br><span class="line">select * from where 条件-&gt;条件中包含查询语句</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意：1.查询结果的虚拟表必须取别名<br>      2.字段与关键字一样，冲突时，需要给字段名加``,(Esc键下面、1的左边)<br>      3.如果给虚拟结果表中的字段取了别名，则对虚拟结果表查询时，应该用 表别名.虚拟表字段别名</p>
-</blockquote>
-<p><strong>===============================插入数据===============================</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into 表名(字段1,字段2..) values(值1,值2…);    </span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>注意： 1.如果插入的表中的主键是自增类型的，可以不用插入值<br>       2.如果主键是非自增 ，插入的数据则是填补主键字段值空余的值<br>       3.如果主键设置了自动递增，会从主键字段最大值开始插入数据</p>
-</blockquote>
-<p>其他插入方式：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">insert into 表名(字段1,字段2) values(值1,值2),(值1,值2);     &#x2F;&#x2F;插入多条数据【MYSQL】</span><br><span class="line">insert into 表名 values(值1,值2);                    &#x2F;&#x2F;针对全表所有字段进行插入操作</span><br><span class="line">insert into 表名(字段) select 字段 from 表2;         &#x2F;&#x2F;查询结果插入</span><br><span class="line">insert into 表名 select 字段 from 表2;               &#x2F;&#x2F;查询结果，全表插入</span><br></pre></td></tr></table></figure>
-
-<p><strong>===============================修改数据===============================</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">update 表 set 字段&#x3D;值 where 条件;  &#x2F;&#x2F;带条件修改指定数据，否则修改全表</span><br></pre></td></tr></table></figure>
-
-<p><strong>===============================删除数据===============================</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">delete from 表 where 条件;  &#x2F;&#x2F;删除数据带条件指定数据，否则删除全表数据</span><br></pre></td></tr></table></figure>
-
-<p><strong>===============================数据备份===============================</strong></p>
-<p>在命令行窗口进行，若操作系统版本高，则使用管理员模式<br>导出：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysqldump -u账户 -p密码 数据库名称&gt;脚本文件存储地</span><br></pre></td></tr></table></figure>
-
-<p>ex:     mysqldump -uroot -proot jdbcdemo&gt; C:/shop_bak.sql<br>导入：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql -u账户 -p密码 数据库名称&lt; 脚本文件存储地址</span><br></pre></td></tr></table></figure>
-
-<p>ex:     mysql -uroot -proot jdbcdemo&lt; C:/shop_bak.sql<br>使用可视化导入导出：<br>Navicat工具的导入和导出/Navicat工具的备份和还原</p>
-<p><strong>===============================数据索引===============================</strong><br>索引的作用相当于图书的目录，可以根据目录中的页码快速找到所需的内容。</p>
-<blockquote>
-<p>什么列适合建索引？？<br>1.表的主键、外键必须有索引；<br>2.数据量超过30000的表应该有索引；<br>3.经常与其他表进行连接的表，在连接字段上应该建立索引；<br>4.经常出现在Where子句中的字段，特别是大表的字段，应该建立索引；<br>5.索引应该建在选择性高的字段上；<br>6.索引应该建在小字段上，对于大的文本字段甚至超长字段，不要建索引； </p>
-</blockquote>
-<p>sql语句创建和删除索引：<br>创建索引: </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE INDEX 索引名称 ON 表名 (列名)</span><br></pre></td></tr></table></figure>
-
-<p>删除索引:<br>方式一：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DROP INDEX 索引名 ON 表名 </span><br></pre></td></tr></table></figure>
-
-<p>方式二:  </p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ALTER TABLE 表名 DROP INDEX 索引名</span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>mysql</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Redis的数据类型和基本操作方法</title>
-    <url>/posts/c3319727/</url>
-    <content><![CDATA[<p>redis存储的是：key-value格式的数据，其中key都是字符串，value有5种不同的数据结构</p>
-<span id="more"></span>
-
-<h2 id="一、Redis的数据结构"><a href="#一、Redis的数据结构" class="headerlink" title="一、Redis的数据结构"></a>一、Redis的数据结构</h2><ol>
-<li>字符串类型 <code>string</code></li>
-<li>哈希类型 <code>hash : map</code> 格式 </li>
-<li>列表类型 <code>list : linkedlist</code> 格式，支持重复元素</li>
-<li>集合类型 <code>set</code> : 不允许重复元素</li>
-<li>有序集合类型 <code>sortedset</code> : 不允许重复元素，且元素有顺序</li>
-</ol>
-<h2 id="二、操作方法"><a href="#二、操作方法" class="headerlink" title="二、操作方法"></a>二、操作方法</h2><h3 id="2-1-字符串类型-string"><a href="#2-1-字符串类型-string" class="headerlink" title="2.1 字符串类型 string"></a>2.1 字符串类型 string</h3><ol>
-<li><strong>存储：</strong> <code>set key value</code><br>127.0.0.1:6379&gt; set username zhangsan<br>OK</li>
-<li><strong>获取：</strong> <code>get key</code><br>127.0.0.1:6379&gt; get username<br>“zhangsan”</li>
-<li><strong>删除：</strong> <code>del key</code><br>127.0.0.1:6379&gt; del age<br>(integer) 1</li>
-</ol>
-<h3 id="2-2-哈希类型-hash"><a href="#2-2-哈希类型-hash" class="headerlink" title="2.2 哈希类型 hash"></a>2.2 哈希类型 hash</h3><ol>
-<li><p><strong>存储：</strong> <code>hset key field value</code><br>127.0.0.1:6379&gt; hset myhash username lisi<br>  (integer) 1</p>
-<p>127.0.0.1:6379&gt; hset myhash password 123<br>  (integer) 1</p>
-</li>
-<li><p><strong>获取：</strong> </p>
-<ul>
-<li><code>hget key field</code> ： 获取指定的field对应的值<br>127.0.0.1:6379&gt; hget myhash username<br>“lisi”<ul>
-<li><code>hgetall key</code> ：获取所有的field和value<br>127.0.0.1:6379&gt; hgetall myhash<br>-1) “username”<br>-2) “lisi”<br>-3) “password”<br>-4) “123”</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>删除：</strong> <code>hdel key field</code><br>127.0.0.1:6379&gt; hdel myhash username<br>(integer) 1</p>
-</li>
-</ol>
-<h3 id="2-3-列表类型-list"><a href="#2-3-列表类型-list" class="headerlink" title="2.3 列表类型 list"></a>2.3 列表类型 list</h3><blockquote>
-<p>可以添加一个元素到列表的头部（左边）或者尾部（右边）</p>
-</blockquote>
-<ol>
-<li><p><strong>添加：</strong></p>
-<ul>
-<li><p><code>lpush key value</code> ：将元素加入列表左表</p>
-</li>
-<li><p><code>rpush key value</code> ：将元素加入列表右边</p>
-<p>127.0.0.1:6379&gt; lpush myList a<br>(integer) 1</p>
-<p>127.0.0.1:6379&gt; lpush myList b<br>(integer) 2</p>
-<p>127.0.0.1:6379&gt; rpush myList c<br>(integer) 3</p>
-</li>
-</ul>
-</li>
-<li><p><strong>获取：</strong><code>lrange key start end</code>  ：范围获取<br>127.0.0.1:6379&gt; lrange myList 0 -1<br>-1) “b”<br>-2) “a”<br>-3) “c”</p>
-</li>
-<li><p><strong>删除：</strong></p>
-<ul>
-<li><code>lpop key</code>： 删除列表最左边的元素，并将元素返回</li>
-<li><code>rpop key</code>： 删除列表最右边的元素，并将元素返回</li>
-</ul>
-</li>
-</ol>
-<h3 id="2-4-集合类型-set"><a href="#2-4-集合类型-set" class="headerlink" title="2.4 集合类型 set"></a>2.4 集合类型 set</h3><blockquote>
-<p>set ： 不允许重复元素</p>
-</blockquote>
-<ol>
-<li><p><strong>存储：</strong><code>sadd key value</code><br> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 1</p>
-<p> 127.0.0.1:6379&gt; sadd myset a<br> (integer) 0</p>
-</li>
-<li><p><strong>获取：</strong><code>smembers key</code> ：获取set集合中所有元素<br> 127.0.0.1:6379&gt; smembers myset</p>
-<ol>
-<li>“a”</li>
-</ol>
-</li>
-<li><p><strong>删除：</strong><code>srem key value</code> ：删除set集合中的某个元素<br> 127.0.0.1:6379&gt; srem myset a<br> (integer) 1</p>
-</li>
-</ol>
-<h3 id="2-5-有序集合类型-sortedset"><a href="#2-5-有序集合类型-sortedset" class="headerlink" title="2.5 有序集合类型 sortedset"></a>2.5 有序集合类型 sortedset</h3><blockquote>
-<p>sortedset：不允许重复元素，且元素有顺序.每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</p>
-</blockquote>
-<ol>
-<li><p><strong>存储：</strong><code>zadd key score value</code><br> 127.0.0.1:6379&gt; zadd mysort 60 zhangsan<br> (integer) 1</p>
-<p> 127.0.0.1:6379&gt; zadd mysort 50 lisi<br> (integer) 1</p>
-<p> 127.0.0.1:6379&gt; zadd mysort 80 wangwu<br> (integer) 1</p>
-</li>
-<li><p><strong>获取：</strong><code>zrange key start end [withscores]</code></p>
-<p>  127.0.0.1:6379&gt; zrange mysort 0 -1<br>  -1) “lisi”<br>  -2) “zhangsan”<br>  -3) “wangwu”</p>
-<p>  127.0.0.1:6379&gt; zrange mysort 0 -1 withscores<br>  -1) “zhangsan”<br>  -2) “60”<br>  -3) “wangwu”<br>  -4) “80”<br>  -5) “lisi”<br>  -6) “500”</p>
-</li>
-<li><p><strong>删除：</strong><code>zrem key value</code><br>  127.0.0.1:6379&gt; zrem mysort lisi<br>  (integer) 1</p>
-</li>
-</ol>
-<h3 id="2-6-通用命令"><a href="#2-6-通用命令" class="headerlink" title="2.6 通用命令"></a>2.6 通用命令</h3><ol>
-<li><code>keys *</code> ：查询所有的键</li>
-<li><code>type key</code> ： 获取键对应的value的类型</li>
-<li><code>del key</code>：删除指定的key value</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>redis</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot特点</title>
-    <url>/posts/f98c6656/</url>
-    <content><![CDATA[<p>SpringBoot 依赖管理 和 自动配置 的特性</p>
-<span id="more"></span>
-
-<h2 id="一、依赖管理"><a href="#一、依赖管理" class="headerlink" title="一、依赖管理"></a>一、依赖管理</h2><ul>
-<li><p>父项目做依赖管理</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><code>spring-boot-starter-parent</code> 的父项目：</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在 <code>spring-boot-dependencies</code> 中几乎声明了所有开发中常用的依赖的版本号，自动版本仲裁机制</p>
-</li>
-<li><p>开发导入 starter 启动器</p>
-<blockquote>
-<p>Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop shop for all the Spring and related technologies that you need without having to hunt through sample code and copy-paste loads of dependency descriptors.</p>
-</blockquote>
-<ul>
-<li><p><code>spring-boot-starter-*</code>  ： <code>*</code> 就是某种场景</p>
-</li>
-<li><p>只要引入 <code>starter</code> ，这个场景的所有常规需要的依赖都会自动引入</p>
-</li>
-<li><p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter">SpringBoot所有支持的场景</a></p>
-</li>
-<li><p><code>*-spring-boot-starter</code> ： 第三方提供的简化开发的场景启动器</p>
-</li>
-<li><p>所有场景启动器最底层的依赖</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><p>无需关注版本号，自动版本仲裁</p>
-<ul>
-<li>引入依赖默认都可以不写版本</li>
-<li>引入非版本仲裁的jar，要写版本号</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><p>也修改默认版本号</p>
-<ol>
-<li><p>查看 <code>spring-boot-dependencies</code> 里面规定当前依赖的版本用的 key。</p>
-</li>
-<li><p>在当前项目里面重写配置</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mysql.version</span>&gt;</span>5.1.7<span class="tag">&lt;/<span class="name">mysql.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-</li>
-</ul>
-<h2 id="二、自动配置"><a href="#二、自动配置" class="headerlink" title="二、自动配置"></a>二、自动配置</h2><h4 id="2-1-自动配好Tomcat"><a href="#2-1-自动配好Tomcat" class="headerlink" title="2.1 自动配好Tomcat"></a>2.1 自动配好Tomcat</h4><ul>
-<li><p>自动引入了 Tomcat 的依赖并且自动配置</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="2-2-自动配好SpringMVC"><a href="#2-2-自动配好SpringMVC" class="headerlink" title="2.2 自动配好SpringMVC"></a>2.2 自动配好SpringMVC</h4><ul>
-<li>引入了SpringMVC全套组件</li>
-<li>自动配好了SpringMVC常用组件</li>
-</ul>
-<h4 id="2-3-自动配置好默认的编码功能，如字符编码问题"><a href="#2-3-自动配置好默认的编码功能，如字符编码问题" class="headerlink" title="2.3 自动配置好默认的编码功能，如字符编码问题"></a>2.3 自动配置好默认的编码功能，如字符编码问题</h4><ul>
-<li>Spring Boot配置好了所有web开发相关的场景</li>
-</ul>
-<h4 id="2-4-默认的包结构"><a href="#2-4-默认的包结构" class="headerlink" title="2.4 默认的包结构"></a>2.4 默认的包结构</h4><ul>
-<li>Spring Boot不需要任何特定的代码布局即可工作</li>
-<li>Spring Boot建议我们将主应用程序类放在其他类之上的根包中。该 <code>@SpringBootApplication</code> 注解往往放在主类。</li>
-<li>主程序所在包及其下面的所有子包里面的组件都会被默认扫描进来。</li>
-<li>如果想要改变扫描路径，使用 <code>@SpringBootApplication(scanBasePackages=&quot;packagename&quot;)</code> <ul>
-<li>或者使用 <code>@EnableAutoConfiguration</code> 和 <code>@ComponentScan</code> 指定扫描路径</li>
-</ul>
-</li>
-</ul>
-<h4 id="2-5-各种配置拥有默认值"><a href="#2-5-各种配置拥有默认值" class="headerlink" title="2.5 各种配置拥有默认值"></a>2.5 各种配置拥有默认值</h4><ul>
-<li>配置文件的值最终会绑定每个类上，这个类会在容器中创建对象</li>
-</ul>
-<h4 id="2-6-按需加载所有自动配置项"><a href="#2-6-按需加载所有自动配置项" class="headerlink" title="2.6 按需加载所有自动配置项"></a>2.6 按需加载所有自动配置项</h4><ul>
-<li>非常多的 starter</li>
-<li>引入了哪些场景这个场景的自动配置才会开启</li>
-<li>Spring Boot 所有的自动配置功能都在 spring-boot-autoconfigure 包里面</li>
-</ul>
-]]></content>
-      <tags>
-        <tag>springboot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringBoot的事件监听</title>
-    <url>/posts/59d95f97/</url>
-    <content><![CDATA[<p>spring boot中事件的使用和发布</p>
-<span id="more"></span>
-
-<h2 id="Spring的事件"><a href="#Spring的事件" class="headerlink" title="Spring的事件"></a>Spring的事件</h2><h3 id="ApplicationStartedEvent"><a href="#ApplicationStartedEvent" class="headerlink" title="ApplicationStartedEvent"></a>ApplicationStartedEvent</h3><blockquote>
-<p>SpringBoot启动监听类</p>
-<p>SpringBoot启动开始的时候执行的事件，在该事件中可以获取到SpringApplication对象，可做一些执行前的设置。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationStartingEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationStartingEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationStartingEvent applicationStartingEvent)</span> </span>&#123;</span><br><span class="line">        SpringApplication application = applicationStartingEvent.getSpringApplication();</span><br><span class="line">        application.setBannerMode(Banner.Mode.OFF);</span><br><span class="line">        System.out.println(<span class="string">&quot;--------- execute MyApplicationStartingEventListener----------&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="ApplicationEnvironmentPreparedEvent"><a href="#ApplicationEnvironmentPreparedEvent" class="headerlink" title="ApplicationEnvironmentPreparedEvent"></a>ApplicationEnvironmentPreparedEvent</h3><blockquote>
-<p> SpringBoot配置环境事件监听</p>
-<p>SpringBoot对应Environment已经准备完毕，但此时上下文context还没有创建。</p>
-<p>在该监听中获取到ConfigurableEnvironment后可以对配置信息做操作，例如：修改默认的配置信息，增加额外的配置信息等等。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationEnvironmentPreparedEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEnvironmentPreparedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationEnvironmentPreparedEvent event)</span> </span>&#123;</span><br><span class="line">        ConfigurableEnvironment environment = event.getEnvironment();</span><br><span class="line">        MutablePropertySources maps = environment.getPropertySources();</span><br><span class="line">        <span class="keyword">for</span> (PropertySource&lt;?&gt; ps : maps) &#123;</span><br><span class="line">            System.out.println(ps.getName() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">            System.out.println(ps.getSource() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">            System.out.println(ps.getClass() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="ApplicationPreparedEvent"><a href="#ApplicationPreparedEvent" class="headerlink" title="ApplicationPreparedEvent"></a>ApplicationPreparedEvent</h3><blockquote>
-<p>Spring Boot上下文context创建完成，但此时spring中的bean是没有完全加载完成的。</p>
-<p>在获取完上下文后，可以将上下文传递出去做一些额外的操作。在该监听器中是无法获取自定义bean并进行操作的。</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationPreparedEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationPreparedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationPreparedEvent event)</span> </span>&#123;</span><br><span class="line">        ConfigurableApplicationContext context = event.getApplicationContext();</span><br><span class="line">        passContextInfo(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传递上下文</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cac</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">passContextInfo</span><span class="params">(ApplicationContext cac)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//dosomething()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="ApplicationReadyEvent"><a href="#ApplicationReadyEvent" class="headerlink" title="ApplicationReadyEvent"></a>ApplicationReadyEvent</h3><blockquote>
-<p>Spring Boot 加载完成时候执行的事件</p>
-</blockquote>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationReadyEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationReadyEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationReadyEvent applicationReadyEvent)</span> </span>&#123;</span><br><span class="line">        applicationReadyEvent.getApplicationContext();</span><br><span class="line">        System.out.println(<span class="string">&quot;springboot启动完成&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h2><ul>
-<li>ApplicationEvent：Spring的事件接口</li>
-<li>ApplicationListener：Spring的事件监听器接口，所有的监听器都实现该接口</li>
-<li>ApplicationEventPublisher：Spring的事件发布接口，ApplicationContext实现了该接口</li>
-<li>ApplicationEventMulticaster：Spring事件机制中的事件广播器，默认实现SimpleApplicationEventMulticaster</li>
-</ul>
-<h3 id="1-自定义事件源和实体"><a href="#1-自定义事件源和实体" class="headerlink" title="1. 自定义事件源和实体"></a>1. 自定义事件源和实体</h3><p>消息实体类</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageEntity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer code;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>自定义事件源</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEvent</span> <span class="keyword">extends</span> <span class="title">ApplicationEvent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MessageEntity messageEntity;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEvent</span><span class="params">(Object source, MessageEntity messageEntity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(source);</span><br><span class="line">        <span class="keyword">this</span>.messageEntity = messageEntity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MessageEntity <span class="title">getMessageEntity</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.messageEntity;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-监听类"><a href="#2-监听类" class="headerlink" title="2. 监听类"></a>2. 监听类</h3><p>使用 <code>@EventListener</code> 的方式</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEventListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*@EventListener</span></span><br><span class="line"><span class="comment">    public void handlerEvent(Object event) &#123;</span></span><br><span class="line"><span class="comment">        log.info(&quot;监听到事件：&#123;&#125;&quot;,event);</span></span><br><span class="line"><span class="comment">    &#125;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEvent</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;监听到MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">                event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听code为100的事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@EventListener(condition = &quot;#event.messageEntity.code==100&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;监听到code为100的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">                event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>继承 <code>ApplicationListener</code> 的方式</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEventListener2</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">MyEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;MyEventListener2接收到事件：&#123;&#125;&quot;</span>,event.getMessageEntity());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>使用@EventListener的condition可以实现更加精细的事件监听，condition支持SpEL表达式，可根据事件源的参数来判断是否监听。</p>
-</blockquote>
-<h3 id="3-发布事件"><a href="#3-发布事件" class="headerlink" title="3. 发布事件"></a>3. 发布事件</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ApplicationEventPublisher publisher;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountRepository repository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/push/100&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">push0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">100</span>, <span class="string">&quot;code为100的消息&quot;</span>)));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;事件为100发布成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/push/obj&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">pushObj</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MessageEntity(<span class="number">1</span>, <span class="string">&quot;code为1的事件&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;对象发布成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/save&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">testSave</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Account account = repository.save(<span class="keyword">new</span> Account(<span class="string">&quot;test&quot;</span>, <span class="number">100.0</span>));</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">300</span>, <span class="string">&quot;保存成功:&quot;</span> + account)));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;保存成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="4-启动类"><a href="#4-启动类" class="headerlink" title="4. 启动类"></a>4. 启动类</h3><p>加入自定义的监听类</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Springboot13EventApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplicationBuilder builder = <span class="keyword">new</span> SpringApplicationBuilder(Springboot13EventApplication.class);</span><br><span class="line">        builder.listeners(<span class="keyword">new</span> MyApplicationStartingEventListener());</span><br><span class="line">        builder.listeners(<span class="keyword">new</span> MyApplicationReadyEventListener());</span><br><span class="line">        <span class="comment">// builder.listeners(new MyEventListener2());</span></span><br><span class="line">        builder.run(args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="5-启动应用，测试"><a href="#5-启动应用，测试" class="headerlink" title="5. 启动应用，测试"></a>5. 启动应用，测试</h3><p> <code>http://localhost:8088/push</code></p>
-<p><img src="https://z3.ax1x.com/2021/11/05/InlWa6.png" alt="InlWa6.png"></p>
-<p><code>http://localhost:8088/push/100</code></p>
-<p><img src="https://z3.ax1x.com/2021/11/05/InlbqI.png" alt="InlbqI.png"></p>
-<p><code>http://localhost:8088/save</code></p>
-<p><img src="https://z3.ax1x.com/2021/11/05/InlxJS.png" alt="InlxJS.png"></p>
-<h2 id="异步监听处理"><a href="#异步监听处理" class="headerlink" title="异步监听处理"></a>异步监听处理</h2><p>在需要异步处理时，可以在方法上加上@Async进行异步化操作。此时，可以定义一个线程池，同时开启异步功能，加入@EnableAsync。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听code为100的事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="meta">@EventListener(condition = &quot;#event.messageEntity.code==100&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;监听到code为100的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">            event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="关于事务绑定事件"><a href="#关于事务绑定事件" class="headerlink" title="关于事务绑定事件"></a>关于事务绑定事件</h2><p>模拟转账</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountRepository accountRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Double money = <span class="number">100d</span>;</span><br><span class="line">        Account source = accountRepository.findById(<span class="number">31</span>).get();</span><br><span class="line">        Account target = accountRepository.findById(<span class="number">32</span>).get();</span><br><span class="line">		<span class="comment">// 源账户减钱</span></span><br><span class="line">        source.setMoney(source.getMoney() - money);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// int i = 1/0;</span></span><br><span class="line">		<span class="comment">// 目标账户加钱</span></span><br><span class="line">        target.setMoney(target.getMoney() + money);</span><br><span class="line"></span><br><span class="line">        accountRepository.save(source);</span><br><span class="line">        accountRepository.save(target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>方便测试。写死了就</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/transfer&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">testTransaction</span><span class="params">()</span></span>&#123;</span><br><span class="line">    accountService.transfer();</span><br><span class="line">    publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">4</span>, <span class="string">&quot;转账成功&quot;</span>)));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;转账成功&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>监听的方法 用<code>@TransactionalEventListener</code> 注解</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听code为4的事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@TransactionalEventListener(condition = &quot;#event.messageEntity.code==4&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition2</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;监听到code为4的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">            event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><h4 id="没有异常的情况访问"><a href="#没有异常的情况访问" class="headerlink" title="没有异常的情况访问"></a>没有异常的情况访问</h4><p><img src="https://z3.ax1x.com/2021/11/05/InJU4P.png" alt="InJU4P.png"></p>
-<p>接收到了事件</p>
-<p><img src="https://z3.ax1x.com/2021/11/05/InJsBj.png" alt="InJsBj.png"></p>
-<h4 id="有异常的情况访问"><a href="#有异常的情况访问" class="headerlink" title="有异常的情况访问"></a>有异常的情况访问</h4><p><img src="https://z3.ax1x.com/2021/11/05/InJVB9.md.png" alt="InJVB9.md.png"></p>
-<p>没有接收到事件</p>
-<p><img src="https://z3.ax1x.com/2021/11/05/InJntx.png" alt="InJntx.png"></p>
-]]></content>
-      <tags>
-        <tag>springboot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>SpringMVC中的拦截器</title>
-    <url>/posts/fa194db2/</url>
-    <content><![CDATA[<h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><blockquote>
-<p>SpringMVC的处理器拦截器类似于 Servlet 开发中的过滤器 Filter，用于对处理器进行预处理和后处理。</p>
-<p>用户可以自己定义一些拦截器来实现特定的功能。</p>
-<p>拦截器链（Interceptor Chain）：拦截器链就是将拦截器按一定的顺序联结成一条链。</p>
-<p>在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。</p>
-</blockquote>
-<span id="more"></span>
-
-<p><strong>拦截器和过滤器的区别：</strong></p>
-<blockquote>
-<p>过滤器是 servlet 规范中的一部分，任何 java web 工程都可以使用。</p>
-<p>拦截器是 SpringMVC 框架自己的，只有使用了 SpringMVC 框架的工程才能用。</p>
-<p>过滤器在 url-pattern 中配置了/*之后，可以对所有要访问的资源拦截。</p>
-<p>拦截器它是只会拦截访问的控制器方法，如果访问的是 jsp,html,css,image 或者 js 是不会进行拦截的。</p>
-<p>它也是 AOP 思想的具体应用。</p>
-</blockquote>
-<h2 id="自定义拦截器的实现步骤"><a href="#自定义拦截器的实现步骤" class="headerlink" title="自定义拦截器的实现步骤"></a>自定义拦截器的实现步骤</h2><ol>
-<li><p>编写拦截器类，实现 <code>HandlerInterceptor</code>  接口</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 预处理，Controller的方法执行前</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 如果是true，代表放行。执行下一个拦截器，如果没有下一个拦截器，执行Controller中的方法。</span></span><br><span class="line"><span class="comment">     *          如果是false，代表不放行。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;拦截器执行了&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在springmvc.xml中配置拦截器</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置拦截器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--要拦截的具体方法 /**代表所有方法全部拦截--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--不拦截的方法</span></span><br><span class="line"><span class="comment">        &lt;mvc:exclude-mapping path=&quot;&quot;/&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--配置自定义拦截器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.interceptor.MyInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果有多个，在这里添加多个mvc:interceptor标签--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>java</tag>
-        <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SpringBoot的容器功能</title>
     <url>/posts/d88cfa76/</url>
     <content><![CDATA[<p>SpringBoot 的组件添加、原生配置文件引入和配置绑定</p>
@@ -1085,6 +830,88 @@
 
 
 <h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringBoot特点</title>
+    <url>/posts/f98c6656/</url>
+    <content><![CDATA[<p>SpringBoot 依赖管理 和 自动配置 的特性</p>
+<span id="more"></span>
+
+<h2 id="一、依赖管理"><a href="#一、依赖管理" class="headerlink" title="一、依赖管理"></a>一、依赖管理</h2><ul>
+<li><p>父项目做依赖管理</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>spring-boot-starter-parent</code> 的父项目：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>spring-boot-dependencies</code> 中几乎声明了所有开发中常用的依赖的版本号，自动版本仲裁机制</p>
+</li>
+<li><p>开发导入 starter 启动器</p>
+<blockquote>
+<p>Starters are a set of convenient dependency descriptors that you can include in your application. You get a one-stop shop for all the Spring and related technologies that you need without having to hunt through sample code and copy-paste loads of dependency descriptors.</p>
+</blockquote>
+<ul>
+<li><p><code>spring-boot-starter-*</code>  ： <code>*</code> 就是某种场景</p>
+</li>
+<li><p>只要引入 <code>starter</code> ，这个场景的所有常规需要的依赖都会自动引入</p>
+</li>
+<li><p><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/using-spring-boot.html#using-boot-starter">SpringBoot所有支持的场景</a></p>
+</li>
+<li><p><code>*-spring-boot-starter</code> ： 第三方提供的简化开发的场景启动器</p>
+</li>
+<li><p>所有场景启动器最底层的依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>无需关注版本号，自动版本仲裁</p>
+<ul>
+<li>引入依赖默认都可以不写版本</li>
+<li>引入非版本仲裁的jar，要写版本号</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>也修改默认版本号</p>
+<ol>
+<li><p>查看 <code>spring-boot-dependencies</code> 里面规定当前依赖的版本用的 key。</p>
+</li>
+<li><p>在当前项目里面重写配置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mysql.version</span>&gt;</span>5.1.7<span class="tag">&lt;/<span class="name">mysql.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ul>
+<h2 id="二、自动配置"><a href="#二、自动配置" class="headerlink" title="二、自动配置"></a>二、自动配置</h2><h4 id="2-1-自动配好Tomcat"><a href="#2-1-自动配好Tomcat" class="headerlink" title="2.1 自动配好Tomcat"></a>2.1 自动配好Tomcat</h4><ul>
+<li><p>自动引入了 Tomcat 的依赖并且自动配置</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-2-自动配好SpringMVC"><a href="#2-2-自动配好SpringMVC" class="headerlink" title="2.2 自动配好SpringMVC"></a>2.2 自动配好SpringMVC</h4><ul>
+<li>引入了SpringMVC全套组件</li>
+<li>自动配好了SpringMVC常用组件</li>
+</ul>
+<h4 id="2-3-自动配置好默认的编码功能，如字符编码问题"><a href="#2-3-自动配置好默认的编码功能，如字符编码问题" class="headerlink" title="2.3 自动配置好默认的编码功能，如字符编码问题"></a>2.3 自动配置好默认的编码功能，如字符编码问题</h4><ul>
+<li>Spring Boot配置好了所有web开发相关的场景</li>
+</ul>
+<h4 id="2-4-默认的包结构"><a href="#2-4-默认的包结构" class="headerlink" title="2.4 默认的包结构"></a>2.4 默认的包结构</h4><ul>
+<li>Spring Boot不需要任何特定的代码布局即可工作</li>
+<li>Spring Boot建议我们将主应用程序类放在其他类之上的根包中。该 <code>@SpringBootApplication</code> 注解往往放在主类。</li>
+<li>主程序所在包及其下面的所有子包里面的组件都会被默认扫描进来。</li>
+<li>如果想要改变扫描路径，使用 <code>@SpringBootApplication(scanBasePackages=&quot;packagename&quot;)</code> <ul>
+<li>或者使用 <code>@EnableAutoConfiguration</code> 和 <code>@ComponentScan</code> 指定扫描路径</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-5-各种配置拥有默认值"><a href="#2-5-各种配置拥有默认值" class="headerlink" title="2.5 各种配置拥有默认值"></a>2.5 各种配置拥有默认值</h4><ul>
+<li>配置文件的值最终会绑定每个类上，这个类会在容器中创建对象</li>
+</ul>
+<h4 id="2-6-按需加载所有自动配置项"><a href="#2-6-按需加载所有自动配置项" class="headerlink" title="2.6 按需加载所有自动配置项"></a>2.6 按需加载所有自动配置项</h4><ul>
+<li>非常多的 starter</li>
+<li>引入了哪些场景这个场景的自动配置才会开启</li>
+<li>Spring Boot 所有的自动配置功能都在 spring-boot-autoconfigure 包里面</li>
+</ul>
+]]></content>
       <tags>
         <tag>springboot</tag>
       </tags>
@@ -1417,6 +1244,61 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot入门</title>
+    <url>/posts/3ce02997/</url>
+    <content><![CDATA[<p>Spring Boot 是由 Pivotal 团队提供的全新框架，其设计目的是用来简化新 Spring 应用的初始搭建以及开发过程。该框架使用了特定的方式来进行配置，从而使开发人员不再需要定义样板化的配置。</p>
+<span id="more"></span>
+
+
+
+<h2 id="一、系统要求"><a href="#一、系统要求" class="headerlink" title="一、系统要求"></a>一、系统要求</h2><ul>
+<li>Java 8+</li>
+<li>Maven 3.3+</li>
+</ul>
+<h2 id="二、快速入门"><a href="#二、快速入门" class="headerlink" title="二、快速入门"></a>二、快速入门</h2><h3 id="2-1-创建maven工程"><a href="#2-1-创建maven工程" class="headerlink" title="2.1 创建maven工程"></a>2.1 创建maven工程</h3><h3 id="2-2-引入依赖"><a href="#2-2-引入依赖" class="headerlink" title="2.2 引入依赖"></a>2.2 引入依赖</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--web相关的依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-创建主程序"><a href="#2-3-创建主程序" class="headerlink" title="2.3 创建主程序"></a>2.3 创建主程序</h3><ul>
+<li>MainApplication.java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span><span class="comment">//这是一个springboot应用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainApplication</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(MainApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-编写业务"><a href="#2-4-编写业务" class="headerlink" title="2.4 编写业务"></a>2.4 编写业务</h3><ul>
+<li>HelloController.java</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello springboot2!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-测试"><a href="#2-5-测试" class="headerlink" title="2.5 测试"></a>2.5 测试</h3><ol>
+<li><p>直接运行MainApplication.java</p>
+</li>
+<li><p>浏览器访问 <code>http://localhost:8080/hello</code></p>
+</li>
+<li><p>响应结果：</p>
+</li>
+</ol>
+<blockquote>
+<p>hello springboot2!</p>
+</blockquote>
+<h3 id="2-6-简化配置"><a href="#2-6-简化配置" class="headerlink" title="2.6 简化配置"></a>2.6 简化配置</h3><ul>
+<li>可以在 <code>application.properties</code> 或者 <code>application.yml</code> 文件内中指定各种属性</li>
+<li><a href="https://docs.spring.io/spring-boot/docs/current/reference/html/appendix-application-properties.html#common-application-properties">常见的Spring Boot属性列表以及对使用它们的基础类的引用</a></li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="comment">#修改端口号</span></span><br><span class="line"><span class="meta">server.port</span>=<span class="string">80</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-7-简化部署"><a href="#2-7-简化部署" class="headerlink" title="2.7 简化部署"></a>2.7 简化部署</h3><blockquote>
+<p>创建一个可以在生产环境中运行的完全独立的可执行jar文件。可执行jar（有时称为 “fat jars”）是包含已编译类以及代码需要运行的所有jar依赖项的归档文件。</p>
+</blockquote>
+<p>要创建可执行jar，需要将添加 <code>spring-boot-maven-plugin</code> 到 <code>pom.xml</code> 。为此，在 <code>dependencies</code> 部分下方插入以下行：</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>保存 <code>pom.xml</code> 然后在终端运行 <code>mvn package</code></p>
+<p>在 <code>target</code> 目录下，有一个 <code>springboot01-hello-world-0.0.1-SNAPSHOT.jar</code></p>
+<p>使用 <code>java -jar</code> 命令运行该程序</p>
+]]></content>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringMVC文件上传</title>
     <url>/posts/649603b7/</url>
     <content><![CDATA[<h2 id="文件上传的必要前提"><a href="#文件上传的必要前提" class="headerlink" title="文件上传的必要前提"></a>文件上传的必要前提</h2><ul>
@@ -1474,6 +1356,93 @@
       </tags>
   </entry>
   <entry>
+    <title>SpringBoot的事件监听</title>
+    <url>/posts/59d95f97/</url>
+    <content><![CDATA[<p>spring boot中事件的使用和发布</p>
+<span id="more"></span>
+
+<h2 id="Spring的事件"><a href="#Spring的事件" class="headerlink" title="Spring的事件"></a>Spring的事件</h2><h3 id="ApplicationStartedEvent"><a href="#ApplicationStartedEvent" class="headerlink" title="ApplicationStartedEvent"></a>ApplicationStartedEvent</h3><blockquote>
+<p>SpringBoot启动监听类</p>
+<p>SpringBoot启动开始的时候执行的事件，在该事件中可以获取到SpringApplication对象，可做一些执行前的设置。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationStartingEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationStartingEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationStartingEvent applicationStartingEvent)</span> </span>&#123;</span><br><span class="line">        SpringApplication application = applicationStartingEvent.getSpringApplication();</span><br><span class="line">        application.setBannerMode(Banner.Mode.OFF);</span><br><span class="line">        System.out.println(<span class="string">&quot;--------- execute MyApplicationStartingEventListener----------&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ApplicationEnvironmentPreparedEvent"><a href="#ApplicationEnvironmentPreparedEvent" class="headerlink" title="ApplicationEnvironmentPreparedEvent"></a>ApplicationEnvironmentPreparedEvent</h3><blockquote>
+<p> SpringBoot配置环境事件监听</p>
+<p>SpringBoot对应Environment已经准备完毕，但此时上下文context还没有创建。</p>
+<p>在该监听中获取到ConfigurableEnvironment后可以对配置信息做操作，例如：修改默认的配置信息，增加额外的配置信息等等。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationEnvironmentPreparedEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationEnvironmentPreparedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationEnvironmentPreparedEvent event)</span> </span>&#123;</span><br><span class="line">        ConfigurableEnvironment environment = event.getEnvironment();</span><br><span class="line">        MutablePropertySources maps = environment.getPropertySources();</span><br><span class="line">        <span class="keyword">for</span> (PropertySource&lt;?&gt; ps : maps) &#123;</span><br><span class="line">            System.out.println(ps.getName() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">            System.out.println(ps.getSource() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">            System.out.println(ps.getClass() + <span class="string">&quot;-----&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="ApplicationPreparedEvent"><a href="#ApplicationPreparedEvent" class="headerlink" title="ApplicationPreparedEvent"></a>ApplicationPreparedEvent</h3><blockquote>
+<p>Spring Boot上下文context创建完成，但此时spring中的bean是没有完全加载完成的。</p>
+<p>在获取完上下文后，可以将上下文传递出去做一些额外的操作。在该监听器中是无法获取自定义bean并进行操作的。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationPreparedEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationPreparedEvent</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationPreparedEvent event)</span> </span>&#123;</span><br><span class="line">        ConfigurableApplicationContext context = event.getApplicationContext();</span><br><span class="line">        passContextInfo(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 传递上下文</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cac</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">passContextInfo</span><span class="params">(ApplicationContext cac)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//dosomething()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ApplicationReadyEvent"><a href="#ApplicationReadyEvent" class="headerlink" title="ApplicationReadyEvent"></a>ApplicationReadyEvent</h3><blockquote>
+<p>Spring Boot 加载完成时候执行的事件</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplicationReadyEventListener</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">ApplicationReadyEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(ApplicationReadyEvent applicationReadyEvent)</span> </span>&#123;</span><br><span class="line">        applicationReadyEvent.getApplicationContext();</span><br><span class="line">        System.out.println(<span class="string">&quot;springboot启动完成&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义事件"><a href="#自定义事件" class="headerlink" title="自定义事件"></a>自定义事件</h2><ul>
+<li>ApplicationEvent：Spring的事件接口</li>
+<li>ApplicationListener：Spring的事件监听器接口，所有的监听器都实现该接口</li>
+<li>ApplicationEventPublisher：Spring的事件发布接口，ApplicationContext实现了该接口</li>
+<li>ApplicationEventMulticaster：Spring事件机制中的事件广播器，默认实现SimpleApplicationEventMulticaster</li>
+</ul>
+<h3 id="1-自定义事件源和实体"><a href="#1-自定义事件源和实体" class="headerlink" title="1. 自定义事件源和实体"></a>1. 自定义事件源和实体</h3><p>消息实体类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageEntity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer code;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>自定义事件源</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEvent</span> <span class="keyword">extends</span> <span class="title">ApplicationEvent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MessageEntity messageEntity;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyEvent</span><span class="params">(Object source, MessageEntity messageEntity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(source);</span><br><span class="line">        <span class="keyword">this</span>.messageEntity = messageEntity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> MessageEntity <span class="title">getMessageEntity</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.messageEntity;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-监听类"><a href="#2-监听类" class="headerlink" title="2. 监听类"></a>2. 监听类</h3><p>使用 <code>@EventListener</code> 的方式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEventListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*@EventListener</span></span><br><span class="line"><span class="comment">    public void handlerEvent(Object event) &#123;</span></span><br><span class="line"><span class="comment">        log.info(&quot;监听到事件：&#123;&#125;&quot;,event);</span></span><br><span class="line"><span class="comment">    &#125;*/</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@EventListener</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEvent</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;监听到MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">                event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 监听code为100的事件</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@EventListener(condition = &quot;#event.messageEntity.code==100&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;监听到code为100的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">                event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继承 <code>ApplicationListener</code> 的方式</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyEventListener2</span> <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">MyEvent</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;MyEventListener2接收到事件：&#123;&#125;&quot;</span>,event.getMessageEntity());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用@EventListener的condition可以实现更加精细的事件监听，condition支持SpEL表达式，可根据事件源的参数来判断是否监听。</p>
+</blockquote>
+<h3 id="3-发布事件"><a href="#3-发布事件" class="headerlink" title="3. 发布事件"></a>3. 发布事件</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ApplicationEventPublisher publisher;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountRepository repository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/push/100&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">push0</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">100</span>, <span class="string">&quot;code为100的消息&quot;</span>)));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;事件为100发布成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/push/obj&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">pushObj</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MessageEntity(<span class="number">1</span>, <span class="string">&quot;code为1的事件&quot;</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;对象发布成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/save&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">testSave</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Account account = repository.save(<span class="keyword">new</span> Account(<span class="string">&quot;test&quot;</span>, <span class="number">100.0</span>));</span><br><span class="line">        publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">300</span>, <span class="string">&quot;保存成功:&quot;</span> + account)));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;保存成功&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-启动类"><a href="#4-启动类" class="headerlink" title="4. 启动类"></a>4. 启动类</h3><p>加入自定义的监听类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Springboot13EventApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplicationBuilder builder = <span class="keyword">new</span> SpringApplicationBuilder(Springboot13EventApplication.class);</span><br><span class="line">        builder.listeners(<span class="keyword">new</span> MyApplicationStartingEventListener());</span><br><span class="line">        builder.listeners(<span class="keyword">new</span> MyApplicationReadyEventListener());</span><br><span class="line">        <span class="comment">// builder.listeners(new MyEventListener2());</span></span><br><span class="line">        builder.run(args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-启动应用，测试"><a href="#5-启动应用，测试" class="headerlink" title="5. 启动应用，测试"></a>5. 启动应用，测试</h3><p> <code>http://localhost:8088/push</code></p>
+<p><img src="https://z3.ax1x.com/2021/11/05/InlWa6.png" alt="InlWa6.png"></p>
+<p><code>http://localhost:8088/push/100</code></p>
+<p><img src="https://z3.ax1x.com/2021/11/05/InlbqI.png" alt="InlbqI.png"></p>
+<p><code>http://localhost:8088/save</code></p>
+<p><img src="https://z3.ax1x.com/2021/11/05/InlxJS.png" alt="InlxJS.png"></p>
+<h2 id="异步监听处理"><a href="#异步监听处理" class="headerlink" title="异步监听处理"></a>异步监听处理</h2><p>在需要异步处理时，可以在方法上加上@Async进行异步化操作。此时，可以定义一个线程池，同时开启异步功能，加入@EnableAsync。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听code为100的事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Async</span></span><br><span class="line"><span class="meta">@EventListener(condition = &quot;#event.messageEntity.code==100&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;监听到code为100的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">            event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="关于事务绑定事件"><a href="#关于事务绑定事件" class="headerlink" title="关于事务绑定事件"></a>关于事务绑定事件</h2><p>模拟转账</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccountRepository accountRepository;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Transactional</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">transfer</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Double money = <span class="number">100d</span>;</span><br><span class="line">        Account source = accountRepository.findById(<span class="number">31</span>).get();</span><br><span class="line">        Account target = accountRepository.findById(<span class="number">32</span>).get();</span><br><span class="line">		<span class="comment">// 源账户减钱</span></span><br><span class="line">        source.setMoney(source.getMoney() - money);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// int i = 1/0;</span></span><br><span class="line">		<span class="comment">// 目标账户加钱</span></span><br><span class="line">        target.setMoney(target.getMoney() + money);</span><br><span class="line"></span><br><span class="line">        accountRepository.save(source);</span><br><span class="line">        accountRepository.save(target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>方便测试。写死了就</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/transfer&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">testTransaction</span><span class="params">()</span></span>&#123;</span><br><span class="line">    accountService.transfer();</span><br><span class="line">    publisher.publishEvent(<span class="keyword">new</span> MyEvent(<span class="keyword">this</span>, <span class="keyword">new</span> MessageEntity(<span class="number">4</span>, <span class="string">&quot;转账成功&quot;</span>)));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;转账成功&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>监听的方法 用<code>@TransactionalEventListener</code> 注解</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听code为4的事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@TransactionalEventListener(condition = &quot;#event.messageEntity.code==4&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handlerMyEventByCondition2</span><span class="params">(MyEvent event)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;监听到code为4的MyEvent事件，消息为：&#123;&#125;，发布时间：&#123;&#125;&quot;</span>,</span><br><span class="line">            event.getMessageEntity(), event.getTimestamp());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><h4 id="没有异常的情况访问"><a href="#没有异常的情况访问" class="headerlink" title="没有异常的情况访问"></a>没有异常的情况访问</h4><p><img src="https://z3.ax1x.com/2021/11/05/InJU4P.png" alt="InJU4P.png"></p>
+<p>接收到了事件</p>
+<p><img src="https://z3.ax1x.com/2021/11/05/InJsBj.png" alt="InJsBj.png"></p>
+<h4 id="有异常的情况访问"><a href="#有异常的情况访问" class="headerlink" title="有异常的情况访问"></a>有异常的情况访问</h4><p><img src="https://z3.ax1x.com/2021/11/05/InJVB9.md.png" alt="InJVB9.md.png"></p>
+<p>没有接收到事件</p>
+<p><img src="https://z3.ax1x.com/2021/11/05/InJntx.png" alt="InJntx.png"></p>
+]]></content>
+      <tags>
+        <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>SpringMVC的异常处理</title>
     <url>/posts/b57ff469/</url>
     <content><![CDATA[<h2 id="异常处理的思路"><a href="#异常处理的思路" class="headerlink" title="异常处理的思路"></a>异常处理的思路</h2><p>Controller调用Service，Service调用Dao，异常都是向上抛出的，最终有DispatcherServlet找异常处理器进行处理。</p>
@@ -1492,89 +1461,6 @@
       <tags>
         <tag>java</tag>
         <tag>SpringMVC</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>spring中基于xml的声明式事务控制</title>
-    <url>/posts/6d837220/</url>
-    <content><![CDATA[<p>spring中基于xml的声明式事务控制配置步骤</p>
-<span id="more"></span>
-
-<h2 id="0-导入依赖"><a href="#0-导入依赖" class="headerlink" title="0. 导入依赖"></a>0. 导入依赖</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-orm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="1-xml版"><a href="#1-xml版" class="headerlink" title="1. xml版"></a>1. xml版</h2><h3 id="1-1-配置事务管理器"><a href="#1-1-配置事务管理器" class="headerlink" title="1.1 配置事务管理器"></a>1.1 配置事务管理器</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;transactionManager&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;dataSource&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-配置事务通知和事务的属性"><a href="#1-2-配置事务通知和事务的属性" class="headerlink" title="1.2 配置事务通知和事务的属性"></a>1.2 配置事务通知和事务的属性</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置事务通知--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">transaction-manager</span>=<span class="string">&quot;transactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置事务的属性--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">&quot;*&quot;</span> <span class="attr">propagation</span>=<span class="string">&quot;REQUIRED&quot;</span> <span class="attr">read-only</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">&quot;find*&quot;</span> <span class="attr">propagation</span>=<span class="string">&quot;SUPPORTS&quot;</span> <span class="attr">read-only</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>配置事务时的属性：</strong>  <code>&lt;tx:method&gt;</code> 标签内</p>
-<p><strong><code>isolation</code>：</strong>用于指定事务的隔离级别。</p>
-<ul>
-<li><strong>DEFAULT：</strong>（默认值）表示使用数据库的默认隔离级别。</li>
-<li><strong>READ_UNCOMMITTED ：</strong>读未提交，允许读取尚未提交的更改；可导致：脏读、幻读<br>和不可重复读。</li>
-<li><strong>READ_COMMITTED：</strong>读已提交，允许从已经提交的并发事务读取；可以防止脏<br>读，但是幻读和不可重复读仍有可能会发生。</li>
-<li><strong>REPEATABLE_READ：</strong>可重复读，对于相同字段的多次读取的结果是一致的，除非<br>数据被当前事务本身改变；可防止脏读和不可重复读，但是<br>幻读仍可能发生。</li>
-<li><strong>SERIALIZABLE：</strong>串读，完全遵循 ACID 的隔离级别，确保不发生：脏读、幻<br>读和不可重复读；所有隔离级别中最慢，因为会锁定当前事<br>务所涉及的数据表。</li>
-</ul>
-<p><strong><code>propagation</code>：</strong>用于指定事务的传播行为。</p>
-<ul>
-<li><strong>REQUIRED：</strong>（默认值）在有事务的状态下执行；如果当前没有事务，则<br>创建新的事务。增删改的选择</li>
-<li><strong>SUPPORTS：</strong>如果当前有事务，则在当前事务状态下执行；如果当前没有事<br>务，则在无事务状态下执行。</li>
-<li><strong>REQUIRES_NEW：</strong>创建新的事务，并在新的事务中执行方法；如果当前已有事务，<br>则将当前事务挂起。</li>
-<li><strong>NOT_SUPPORTED：</strong>在没有事务的状态下执行；如果当前已有事务，则将当前事务<br>挂起。</li>
-<li><strong>NEVER：</strong>在没有事务的状态下执行，如果当前已经存在事务，则抛出异<br>常：IllegalTransactionStateException。</li>
-<li><strong>NESTED：</strong>如果没有一个已经定义的事务，则新创建一个事务，当前方法<br>在新建的事务中执行；如果存在已经定义的事务，则当前方法<br>在嵌套事务中执行；嵌套事务的 commit 和 rollback 不影响外<br>层事务的继续执行。</li>
-<li><strong>MANDATORY：</strong>必须在已经添加事务的状态下执行，如果当前没有添加事务，<br>则抛出异常 IllegalTransactionStateException。</li>
-</ul>
-<p><strong><code>read-only</code>：</strong>用于指定事务是否只读。只有查询方法才能设置为true。默认值是false，表示读写</p>
-<p><strong><code>timeout</code>：</strong>用于指定事务的超时时间，默认值是-1，表示永不超时。如果指定了数值，以秒为单位</p>
-<p><strong><code>rollback-for</code>：</strong>用于指定一个异常，当产生该异常时，事务回滚，产生其他异常时，事务不回滚。      没有默认值，表示任何异常都回滚。</p>
-<p><strong><code>no-rollback-for</code>：</strong>用于指定一个异常，当产生该异常时，事务不回滚，产生其他异常时，事务回滚。   没有默认值，表示任何异常都回滚。</p>
-<h3 id="1-3-配置aop"><a href="#1-3-配置aop" class="headerlink" title="1.3 配置aop"></a>1.3 配置aop</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置aop--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置切入点表达式--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">&quot;pt1&quot;</span> <span class="attr">expression</span>=<span class="string">&quot;execution(* com.xzxj.service.impl.*.*(..))&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--建立切入点表达式和事务通知的对应关系--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">advice-ref</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">pointcut-ref</span>=<span class="string">&quot;pt1&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-注解版"><a href="#2-注解版" class="headerlink" title="2. 注解版"></a>2. 注解版</h2>]]></content>
-      <tags>
-        <tag>spring</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>spring中基于注解的aop配置</title>
-    <url>/posts/f21e4f2a/</url>
-    <content><![CDATA[<p>注解aop</p>
-<span id="more"></span>
-
-<h2 id="spring中基于注解的aop配置步骤"><a href="#spring中基于注解的aop配置步骤" class="headerlink" title="spring中基于注解的aop配置步骤"></a>spring中基于注解的aop配置步骤</h2><ol>
-<li>在applicationContext.xml中开启开启注解AOP的支持</li>
-</ol>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>用于记录日志的工具类，提供了公共的代码</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;logger&quot;)</span></span><br><span class="line"><span class="meta">@Aspect</span><span class="comment">//表示当前类是一个切面</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//切入点表达式</span></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* com.hzj.service.impl.*.*(..))&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pt1</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @Before(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforePrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;前置通知：printLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 后置通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @AfterReturning(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterReturningPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;后置通知：afterReturningPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @AfterThrowing(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowingPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;异常通知：afterThrowingPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最终通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @After(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;最终通知：afterPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *环绕通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">aroundPrintLog</span><span class="params">(ProceedingJoinPoint pjp)</span> </span>&#123;</span><br><span class="line">        Object returnValue;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Object[] args = pjp.getArgs();<span class="comment">//得到方法执行所需的参数</span></span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。前置&quot;</span>);</span><br><span class="line">            returnValue = pjp.proceed(args);<span class="comment">//明确调用业务层方法（切入点方法）</span></span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。后置&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> returnValue;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。异常&quot;</span>);</span><br><span class="line">            t.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。最终&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>账户的业务层实现类（省略接口）</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service(&quot;accountService&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了保存&quot;</span>);</span><br><span class="line"><span class="comment">//        int i = 1/0;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateAccount</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了更新&quot;</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deleteAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了删除&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>测试类</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AOPTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1.获取容器</span></span><br><span class="line">        ApplicationContext ac = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;bean.xml&quot;</span>);</span><br><span class="line">        <span class="comment">// 2.获取对象</span></span><br><span class="line">        IAccountService service = (IAccountService) ac.getBean(<span class="string">&quot;accountService&quot;</span>);</span><br><span class="line">        <span class="comment">// 3.执行方法</span></span><br><span class="line">        service.saveAccount();</span><br><span class="line"><span class="comment">//        service.updateAccount(1);</span></span><br><span class="line"><span class="comment">//        service.deleteAccount();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="5">
-<li>执行结果</li>
-</ol>
-<blockquote>
-<p>Logger类中的aroundPrintLog方法开始记录日志了。。。前置<br>执行了保存<br>Logger类中的aroundPrintLog方法开始记录日志了。。。后置<br>Logger类中的aroundPrintLog方法开始记录日志了。。。最终</p>
-</blockquote>
-]]></content>
-      <tags>
-        <tag>spring</tag>
       </tags>
   </entry>
   <entry>
@@ -1696,221 +1582,86 @@
       </tags>
   </entry>
   <entry>
-    <title>spring中的依赖注入</title>
-    <url>/posts/45b64bd9/</url>
-    <content><![CDATA[<blockquote>
-<p>依赖注入：Dependency Injection</p>
-<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
-<p>依赖关系的管理：以后都交给spring来维护</p>
-<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
-<p>依赖关系的维护 就称之为依赖注入。</p>
-</blockquote>
+    <title>spring中基于注解的aop配置</title>
+    <url>/posts/f21e4f2a/</url>
+    <content><![CDATA[<p>注解aop</p>
 <span id="more"></span>
 
+<h2 id="spring中基于注解的aop配置步骤"><a href="#spring中基于注解的aop配置步骤" class="headerlink" title="spring中基于注解的aop配置步骤"></a>spring中基于注解的aop配置步骤</h2><ol>
+<li>在applicationContext.xml中开启开启注解AOP的支持</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br></pre></td></tr></table></figure>
 
+<ol start="2">
+<li>用于记录日志的工具类，提供了公共的代码</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;logger&quot;)</span></span><br><span class="line"><span class="meta">@Aspect</span><span class="comment">//表示当前类是一个切面</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Logger</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//切入点表达式</span></span><br><span class="line">    <span class="meta">@Pointcut(&quot;execution(* com.hzj.service.impl.*.*(..))&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pt1</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 前置通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @Before(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforePrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;前置通知：printLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 后置通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @AfterReturning(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterReturningPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;后置通知：afterReturningPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 异常通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @AfterThrowing(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterThrowingPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;异常通知：afterThrowingPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 最终通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">   <span class="comment">// @After(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">afterPrintLog</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;最终通知：afterPrintLog方法开始记录日志了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *环绕通知</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around(&quot;pt1()&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">aroundPrintLog</span><span class="params">(ProceedingJoinPoint pjp)</span> </span>&#123;</span><br><span class="line">        Object returnValue;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Object[] args = pjp.getArgs();<span class="comment">//得到方法执行所需的参数</span></span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。前置&quot;</span>);</span><br><span class="line">            returnValue = pjp.proceed(args);<span class="comment">//明确调用业务层方法（切入点方法）</span></span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。后置&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> returnValue;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。异常&quot;</span>);</span><br><span class="line">            t.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Logger类中的aroundPrintLog方法开始记录日志了。。。最终&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>依赖注入：</p>
-<p>能注入的数据：有三类</p>
-<ul>
-<li><p>基本类型和String</p>
-</li>
-<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
-</li>
-<li><p>复杂类型/集合类型</p>
-</li>
-</ul>
-<p> 注入的方式：有三种</p>
-<ul>
-<li><p>第一种：使用构造函数提供</p>
-</li>
-<li><p>第二种：使用set方法提供（更常用的方式）</p>
-</li>
-<li><p>第三种：使用注解提供</p>
-</li>
-</ul>
-<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
-<li><p>使用的标签：<code>constructor-arg</code></p>
-</li>
-<li><p>标签出现的位置：<code>bean</code>标签内部</p>
-</li>
-<li><p>标签中的属性</p>
-<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
-<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
-<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p><code>value</code>：用于提供基本类型和String类型的数据</p>
-<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
-</li>
-<li><p>弊端：</p>
-<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>账户的业务层实现类（省略接口）</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Service(&quot;accountService&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccountServiceImpl</span> <span class="keyword">implements</span> <span class="title">IAccountService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">saveAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了保存&quot;</span>);</span><br><span class="line"><span class="comment">//        int i = 1/0;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateAccount</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了更新&quot;</span> + i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deleteAccount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;执行了删除&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<ol start="4">
+<li>测试类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AOPTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1.获取容器</span></span><br><span class="line">        ApplicationContext ac = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">&quot;bean.xml&quot;</span>);</span><br><span class="line">        <span class="comment">// 2.获取对象</span></span><br><span class="line">        IAccountService service = (IAccountService) ac.getBean(<span class="string">&quot;accountService&quot;</span>);</span><br><span class="line">        <span class="comment">// 3.执行方法</span></span><br><span class="line">        service.saveAccount();</span><br><span class="line"><span class="comment">//        service.updateAccount(1);</span></span><br><span class="line"><span class="comment">//        service.deleteAccount();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
-<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
-</li>
-<li><p>出现的位置：bean标签的内部</p>
-</li>
-<li><p>标签的属性：</p>
-<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
-<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
-<p>value：用于提供基本类型和String类型的数据</p>
-<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
-</li>
-<li><p>优势：</p>
-<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
-</li>
-<li><p>弊端：</p>
-<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
-</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
-<li>用于给List结构集合注入的标签：</li>
-</ul>
-<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
-<ul>
-<li>用于给Map集合结构注入的标签：</li>
-</ul>
-<p><code>map</code> 、<code>props</code></p>
-<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
-      <tags>
-        <tag>spring</tag>
-        <tag>java</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>spring中的注解ioc</title>
-    <url>/posts/6a832505/</url>
-    <content><![CDATA[<p>spring中注解ioc的简单用法</p>
-<span id="more"></span>
-
-<h2 id="注解注入属性一个简单的案例"><a href="#注解注入属性一个简单的案例" class="headerlink" title="注解注入属性一个简单的案例"></a>注解注入属性一个简单的案例</h2><h3 id="Spring配置文件引入context约束"><a href="#Spring配置文件引入context约束" class="headerlink" title="Spring配置文件引入context约束"></a>Spring配置文件引入context约束</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Spring配置文件中开启注解扫描"><a href="#Spring配置文件中开启注解扫描" class="headerlink" title="Spring配置文件中开启注解扫描"></a>Spring配置文件中开启注解扫描</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--告知spring在创建容器时要扫描的包，配置所需要的标签，不是在beans的约束中，而是一个名称为context名称空间和约束中--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.demo&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="在类上添加-Component注解"><a href="#在类上添加-Component注解" class="headerlink" title="在类上添加@Component注解"></a>在类上添加@Component注解</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;user&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="comment">/*getter and stter*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="Spring-IoC常用注解"><a href="#Spring-IoC常用注解" class="headerlink" title="Spring IoC常用注解"></a>Spring IoC常用注解</h2><h3 id="用于创建对象的"><a href="#用于创建对象的" class="headerlink" title="用于创建对象的"></a>用于创建对象的</h3><blockquote>
-<p>他们的作用就和在XML配置文件中编写一个<code>&lt;bean&gt;</code>标签实现的功能是一样的</p>
-</blockquote>
-<p><code>@Component</code>:</p>
-<ul>
-<li><p><strong>作用：</strong>用于把当前类对象存入spring容器中</p>
-</li>
-<li><p><strong>属性：</strong></p>
-<ul>
-<li>value：用于指定bean的id。当不写时，他的默认值是当前类名，且首字母改小写</li>
-</ul>
-</li>
-</ul>
-<p><code>@Controller</code>：一般用在表现层</p>
-<p><code>@Service</code>：一般用在业务层</p>
-<p><code>@Repository</code>：一般用在持久层</p>
-<ul>
-<li><p>以上三个注解的作用和属性和@Component是一模一样的。</p>
-</li>
-<li><p>他们三个是spring框架为我们提供明确的三层使用的注解，使我们的三层对象更加清晰</p>
-</li>
-</ul>
-<h3 id="用于注入数据的"><a href="#用于注入数据的" class="headerlink" title="用于注入数据的"></a>用于注入数据的</h3><blockquote>
-<p>他们的作用就和在XML配置文件中<code>&lt;bean&gt;</code>标签中写一个<code>&lt;property&gt;</code>标签的作用是一样的</p>
-</blockquote>
-<p><code>@Autowired</code>：</p>
-<ul>
-<li><p><strong>作用：</strong></p>
-<ul>
-<li>自动按照类型注入。只要容器中有唯一的一个bean对象类型和要注入的变量类型匹配，就可以注入成功</li>
-<li>如果ioc容器中没有任何bean类型和要注入的变量类型匹配，则报错。</li>
-<li>如果ioc容器中有多个类型匹配时：</li>
-</ul>
-</li>
-<li><p><strong>出现位置：</strong></p>
-<ul>
-<li>可以是变量上，也可以是方法上</li>
-</ul>
-</li>
-<li><p><strong>细节：</strong></p>
-<ul>
-<li>在使用注解注入时，set方法就不是必须的了</li>
-</ul>
-</li>
-</ul>
-<p><code>@Qualifier</code>：</p>
-<ul>
-<li><p><strong>作用：</strong>在按照类型注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以</p>
-</li>
-<li><p><strong>属性：</strong></p>
-<ul>
-<li>value：用于指定注入bean的id</li>
-</ul>
-</li>
-</ul>
-<p><code>@Resource</code>：</p>
-<ul>
-<li><p><strong>作用：</strong>直接按照bean的id注入。可以独立使用</p>
-</li>
-<li><p><strong>属性：</strong></p>
-<ul>
-<li>name：用于指定注入bean的id</li>
-</ul>
-</li>
-</ul>
+<ol start="5">
+<li>执行结果</li>
+</ol>
 <blockquote>
-<p>以上三个注入都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现</p>
-<p>另外集合类型的注入只能通过XML来实现</p>
+<p>Logger类中的aroundPrintLog方法开始记录日志了。。。前置<br>执行了保存<br>Logger类中的aroundPrintLog方法开始记录日志了。。。后置<br>Logger类中的aroundPrintLog方法开始记录日志了。。。最终</p>
 </blockquote>
-<p><code>@Value</code>：</p>
-<ul>
-<li><p><strong>作用：</strong>用于注入基本类型和String类型的数据</p>
-</li>
-<li><p><strong>属性：</strong></p>
-<ul>
-<li>value：用于指定数据的值。可以使用spring的SpEL(也就是spring的el表达式)</li>
-<li>SpEL的写法：${表达式}</li>
-</ul>
-</li>
-</ul>
-<h3 id="用于改变作用范围的"><a href="#用于改变作用范围的" class="headerlink" title="用于改变作用范围的"></a>用于改变作用范围的</h3><blockquote>
-<p>他们的作用就和在<code>&lt;bean&gt;</code>标签中使用<code>scope</code>属性实现的功能是一样的</p>
-</blockquote>
-<p><code>@Scope</code>：</p>
-<ul>
-<li><p><strong>作用：</strong>用于指定bean的作用范围</p>
-</li>
-<li><p><strong>属性：</strong></p>
-<ul>
-<li>value：指定范围的取值。常用取值<code>singleton</code> <code>prototype</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="和声明周期相关的"><a href="#和声明周期相关的" class="headerlink" title="和声明周期相关的"></a>和声明周期相关的</h3><blockquote>
-<p><code>&lt;bean&gt;</code>标签中使用<code>init-method</code>和<code>destroy-method</code>的作用是一样的</p>
-</blockquote>
-<p><code>@PreDestroy</code>：</p>
-<ul>
-<li><strong>作用：</strong>用于指定销毁方法</li>
-</ul>
-<p><code>@PostConstruct</code>：</p>
-<ul>
-<li><strong>作用：</strong>用于指定初始化方法</li>
-</ul>
 ]]></content>
       <tags>
         <tag>spring</tag>
-        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring中基于xml的声明式事务控制</title>
+    <url>/posts/6d837220/</url>
+    <content><![CDATA[<p>spring中基于xml的声明式事务控制配置步骤</p>
+<span id="more"></span>
+
+<h2 id="0-导入依赖"><a href="#0-导入依赖" class="headerlink" title="0. 导入依赖"></a>0. 导入依赖</h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-orm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-xml版"><a href="#1-xml版" class="headerlink" title="1. xml版"></a>1. xml版</h2><h3 id="1-1-配置事务管理器"><a href="#1-1-配置事务管理器" class="headerlink" title="1.1 配置事务管理器"></a>1.1 配置事务管理器</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;transactionManager&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;dataSource&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;dataSource&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-配置事务通知和事务的属性"><a href="#1-2-配置事务通知和事务的属性" class="headerlink" title="1.2 配置事务通知和事务的属性"></a>1.2 配置事务通知和事务的属性</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置事务通知--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">tx:advice</span> <span class="attr">id</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">transaction-manager</span>=<span class="string">&quot;transactionManager&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置事务的属性--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">&quot;*&quot;</span> <span class="attr">propagation</span>=<span class="string">&quot;REQUIRED&quot;</span> <span class="attr">read-only</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">tx:method</span> <span class="attr">name</span>=<span class="string">&quot;find*&quot;</span> <span class="attr">propagation</span>=<span class="string">&quot;SUPPORTS&quot;</span> <span class="attr">read-only</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tx:attributes</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tx:advice</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>配置事务时的属性：</strong>  <code>&lt;tx:method&gt;</code> 标签内</p>
+<p><strong><code>isolation</code>：</strong>用于指定事务的隔离级别。</p>
+<ul>
+<li><strong>DEFAULT：</strong>（默认值）表示使用数据库的默认隔离级别。</li>
+<li><strong>READ_UNCOMMITTED ：</strong>读未提交，允许读取尚未提交的更改；可导致：脏读、幻读<br>和不可重复读。</li>
+<li><strong>READ_COMMITTED：</strong>读已提交，允许从已经提交的并发事务读取；可以防止脏<br>读，但是幻读和不可重复读仍有可能会发生。</li>
+<li><strong>REPEATABLE_READ：</strong>可重复读，对于相同字段的多次读取的结果是一致的，除非<br>数据被当前事务本身改变；可防止脏读和不可重复读，但是<br>幻读仍可能发生。</li>
+<li><strong>SERIALIZABLE：</strong>串读，完全遵循 ACID 的隔离级别，确保不发生：脏读、幻<br>读和不可重复读；所有隔离级别中最慢，因为会锁定当前事<br>务所涉及的数据表。</li>
+</ul>
+<p><strong><code>propagation</code>：</strong>用于指定事务的传播行为。</p>
+<ul>
+<li><strong>REQUIRED：</strong>（默认值）在有事务的状态下执行；如果当前没有事务，则<br>创建新的事务。增删改的选择</li>
+<li><strong>SUPPORTS：</strong>如果当前有事务，则在当前事务状态下执行；如果当前没有事<br>务，则在无事务状态下执行。</li>
+<li><strong>REQUIRES_NEW：</strong>创建新的事务，并在新的事务中执行方法；如果当前已有事务，<br>则将当前事务挂起。</li>
+<li><strong>NOT_SUPPORTED：</strong>在没有事务的状态下执行；如果当前已有事务，则将当前事务<br>挂起。</li>
+<li><strong>NEVER：</strong>在没有事务的状态下执行，如果当前已经存在事务，则抛出异<br>常：IllegalTransactionStateException。</li>
+<li><strong>NESTED：</strong>如果没有一个已经定义的事务，则新创建一个事务，当前方法<br>在新建的事务中执行；如果存在已经定义的事务，则当前方法<br>在嵌套事务中执行；嵌套事务的 commit 和 rollback 不影响外<br>层事务的继续执行。</li>
+<li><strong>MANDATORY：</strong>必须在已经添加事务的状态下执行，如果当前没有添加事务，<br>则抛出异常 IllegalTransactionStateException。</li>
+</ul>
+<p><strong><code>read-only</code>：</strong>用于指定事务是否只读。只有查询方法才能设置为true。默认值是false，表示读写</p>
+<p><strong><code>timeout</code>：</strong>用于指定事务的超时时间，默认值是-1，表示永不超时。如果指定了数值，以秒为单位</p>
+<p><strong><code>rollback-for</code>：</strong>用于指定一个异常，当产生该异常时，事务回滚，产生其他异常时，事务不回滚。      没有默认值，表示任何异常都回滚。</p>
+<p><strong><code>no-rollback-for</code>：</strong>用于指定一个异常，当产生该异常时，事务不回滚，产生其他异常时，事务回滚。   没有默认值，表示任何异常都回滚。</p>
+<h3 id="1-3-配置aop"><a href="#1-3-配置aop" class="headerlink" title="1.3 配置aop"></a>1.3 配置aop</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置aop--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--配置切入点表达式--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:pointcut</span> <span class="attr">id</span>=<span class="string">&quot;pt1&quot;</span> <span class="attr">expression</span>=<span class="string">&quot;execution(* com.xzxj.service.impl.*.*(..))&quot;</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--建立切入点表达式和事务通知的对应关系--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:advisor</span> <span class="attr">advice-ref</span>=<span class="string">&quot;txAdvice&quot;</span> <span class="attr">pointcut-ref</span>=<span class="string">&quot;pt1&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-注解版"><a href="#2-注解版" class="headerlink" title="2. 注解版"></a>2. 注解版</h2>]]></content>
+      <tags>
+        <tag>spring</tag>
       </tags>
   </entry>
   <entry>
@@ -2079,6 +1830,100 @@
       </tags>
   </entry>
   <entry>
+    <title>spring中的依赖注入</title>
+    <url>/posts/45b64bd9/</url>
+    <content><![CDATA[<blockquote>
+<p>依赖注入：Dependency Injection</p>
+<p>IOC的作用：降低程序间的耦合（依赖关系）</p>
+<p>依赖关系的管理：以后都交给spring来维护</p>
+<p>在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明</p>
+<p>依赖关系的维护 就称之为依赖注入。</p>
+</blockquote>
+<span id="more"></span>
+
+
+
+<p>依赖注入：</p>
+<p>能注入的数据：有三类</p>
+<ul>
+<li><p>基本类型和String</p>
+</li>
+<li><p>其他bean类型（在配置文件中或者注解配置过的bean）</p>
+</li>
+<li><p>复杂类型/集合类型</p>
+</li>
+</ul>
+<p> 注入的方式：有三种</p>
+<ul>
+<li><p>第一种：使用构造函数提供</p>
+</li>
+<li><p>第二种：使用set方法提供（更常用的方式）</p>
+</li>
+<li><p>第三种：使用注解提供</p>
+</li>
+</ul>
+<h2 id="构造函数注入"><a href="#构造函数注入" class="headerlink" title="构造函数注入"></a>构造函数注入</h2><ul>
+<li><p>使用的标签：<code>constructor-arg</code></p>
+</li>
+<li><p>标签出现的位置：<code>bean</code>标签内部</p>
+</li>
+<li><p>标签中的属性</p>
+<p> <code>type</code>：用于指定要注入的数据的数据类型，该数据类型也是构造函数中某个或某些参数的类型</p>
+<p><code>index</code>：用于指定要注入的数据给构造函数中指定索引位置的参数赋值。索引的位置是从0开始</p>
+<p><code>name</code>：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p><code>value</code>：用于提供基本类型和String类型的数据</p>
+<p><code>ref</code>：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>在获取bean对象时，注入数据是必须的操作，否则对象无法创建成功。</p>
+</li>
+<li><p>弊端：</p>
+<p>改变了bean对象的实例化方式，使我们在创建对象时，如果用不到这些数据，也必须提供</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--如果是经常变化的数据，并不适用于注入的方式。仅作为示例--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now/&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--配置一个日期对象--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;now&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="set方法注入"><a href="#set方法注入" class="headerlink" title="set方法注入"></a>set方法注入</h2><ul>
+<li><p>涉及的标签：<code>&lt;property&gt;</code></p>
+</li>
+<li><p>出现的位置：bean标签的内部</p>
+</li>
+<li><p>标签的属性：</p>
+<p>name：用于指定给构造函数中指定名称的参数赋值 <strong>（常用的）</strong></p>
+<p><strong>以上三个用于指定给构造函数中哪个参数赋值</strong></p>
+<p>value：用于提供基本类型和String类型的数据</p>
+<p>ref：用于指定其他的bean类型数据。他指的就是在spring的IOC核心容器中出现过的bean对象</p>
+</li>
+<li><p>优势：</p>
+<p>创建对象时没有明确的限制，可以直接使用默认构造函数</p>
+</li>
+<li><p>弊端：</p>
+<p>如果某个成员必须有值，则获取对象时有可能set方法没有执行。</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService2&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl2&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;test2&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;age&quot;</span> <span class="attr">value</span>=<span class="string">&quot;21&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;birthday&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;now&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="复杂类型的注入-集合类型的注入"><a href="#复杂类型的注入-集合类型的注入" class="headerlink" title="复杂类型的注入/集合类型的注入"></a>复杂类型的注入/集合类型的注入</h2><ul>
+<li>用于给List结构集合注入的标签：</li>
+</ul>
+<p><code>list</code> 、 <code>array</code> 、 <code>set</code></p>
+<ul>
+<li>用于给Map集合结构注入的标签：</li>
+</ul>
+<p><code>map</code> 、<code>props</code></p>
+<p>结构相同，标签可以互换。<strong>需要提供set方法</strong></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;accountService3&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.service.impl.AccountServiceImpl3&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数组--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myStrings&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--List--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myList&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--set--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mySet&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>AAA<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>BBB<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>CCC<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--map--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myMap&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testA&quot;</span> <span class="attr">value</span>=<span class="string">&quot;aaa&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">&quot;testB&quot;</span> &gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">value</span>&gt;</span>bbb<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">entry</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--Properties--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;myProperties&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testC&quot;</span>&gt;</span>ccc<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">&quot;testDC&quot;</span>&gt;</span>ddd<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    </span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
+      <tags>
+        <tag>spring</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>注解的基本用法</title>
     <url>/posts/d2d18c1a/</url>
     <content><![CDATA[<blockquote>
@@ -2214,6 +2059,161 @@
 ]]></content>
       <tags>
         <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringMVC中的拦截器</title>
+    <url>/posts/fa194db2/</url>
+    <content><![CDATA[<h2 id="拦截器的作用"><a href="#拦截器的作用" class="headerlink" title="拦截器的作用"></a>拦截器的作用</h2><blockquote>
+<p>SpringMVC的处理器拦截器类似于 Servlet 开发中的过滤器 Filter，用于对处理器进行预处理和后处理。</p>
+<p>用户可以自己定义一些拦截器来实现特定的功能。</p>
+<p>拦截器链（Interceptor Chain）：拦截器链就是将拦截器按一定的顺序联结成一条链。</p>
+<p>在访问被拦截的方法或字段时，拦截器链中的拦截器就会按其之前定义的顺序被调用。</p>
+</blockquote>
+<span id="more"></span>
+
+<p><strong>拦截器和过滤器的区别：</strong></p>
+<blockquote>
+<p>过滤器是 servlet 规范中的一部分，任何 java web 工程都可以使用。</p>
+<p>拦截器是 SpringMVC 框架自己的，只有使用了 SpringMVC 框架的工程才能用。</p>
+<p>过滤器在 url-pattern 中配置了/*之后，可以对所有要访问的资源拦截。</p>
+<p>拦截器它是只会拦截访问的控制器方法，如果访问的是 jsp,html,css,image 或者 js 是不会进行拦截的。</p>
+<p>它也是 AOP 思想的具体应用。</p>
+</blockquote>
+<h2 id="自定义拦截器的实现步骤"><a href="#自定义拦截器的实现步骤" class="headerlink" title="自定义拦截器的实现步骤"></a>自定义拦截器的实现步骤</h2><ol>
+<li><p>编写拦截器类，实现 <code>HandlerInterceptor</code>  接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 预处理，Controller的方法执行前</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> handler</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 如果是true，代表放行。执行下一个拦截器，如果没有下一个拦截器，执行Controller中的方法。</span></span><br><span class="line"><span class="comment">     *          如果是false，代表不放行。</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;拦截器执行了&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>在springmvc.xml中配置拦截器</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--配置拦截器--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:interceptors</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--要拦截的具体方法 /**代表所有方法全部拦截--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">mvc:mapping</span> <span class="attr">path</span>=<span class="string">&quot;/**&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--不拦截的方法</span></span><br><span class="line"><span class="comment">        &lt;mvc:exclude-mapping path=&quot;&quot;/&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--配置自定义拦截器--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.interceptor.MyInterceptor&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:interceptor</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--如果有多个，在这里添加多个mvc:interceptor标签--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:interceptors</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>SpringMVC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>spring中的注解ioc</title>
+    <url>/posts/6a832505/</url>
+    <content><![CDATA[<p>spring中注解ioc的简单用法</p>
+<span id="more"></span>
+
+<h2 id="注解注入属性一个简单的案例"><a href="#注解注入属性一个简单的案例" class="headerlink" title="注解注入属性一个简单的案例"></a>注解注入属性一个简单的案例</h2><h3 id="Spring配置文件引入context约束"><a href="#Spring配置文件引入context约束" class="headerlink" title="Spring配置文件引入context约束"></a>Spring配置文件引入context约束</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="tag"><span class="string">        https://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Spring配置文件中开启注解扫描"><a href="#Spring配置文件中开启注解扫描" class="headerlink" title="Spring配置文件中开启注解扫描"></a>Spring配置文件中开启注解扫描</h3><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!--告知spring在创建容器时要扫描的包，配置所需要的标签，不是在beans的约束中，而是一个名称为context名称空间和约束中--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;com.demo&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="在类上添加-Component注解"><a href="#在类上添加-Component注解" class="headerlink" title="在类上添加@Component注解"></a>在类上添加@Component注解</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component(&quot;user&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Integer id;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="comment">/*getter and stter*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Spring-IoC常用注解"><a href="#Spring-IoC常用注解" class="headerlink" title="Spring IoC常用注解"></a>Spring IoC常用注解</h2><h3 id="用于创建对象的"><a href="#用于创建对象的" class="headerlink" title="用于创建对象的"></a>用于创建对象的</h3><blockquote>
+<p>他们的作用就和在XML配置文件中编写一个<code>&lt;bean&gt;</code>标签实现的功能是一样的</p>
+</blockquote>
+<p><code>@Component</code>:</p>
+<ul>
+<li><p><strong>作用：</strong>用于把当前类对象存入spring容器中</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：用于指定bean的id。当不写时，他的默认值是当前类名，且首字母改小写</li>
+</ul>
+</li>
+</ul>
+<p><code>@Controller</code>：一般用在表现层</p>
+<p><code>@Service</code>：一般用在业务层</p>
+<p><code>@Repository</code>：一般用在持久层</p>
+<ul>
+<li><p>以上三个注解的作用和属性和@Component是一模一样的。</p>
+</li>
+<li><p>他们三个是spring框架为我们提供明确的三层使用的注解，使我们的三层对象更加清晰</p>
+</li>
+</ul>
+<h3 id="用于注入数据的"><a href="#用于注入数据的" class="headerlink" title="用于注入数据的"></a>用于注入数据的</h3><blockquote>
+<p>他们的作用就和在XML配置文件中<code>&lt;bean&gt;</code>标签中写一个<code>&lt;property&gt;</code>标签的作用是一样的</p>
+</blockquote>
+<p><code>@Autowired</code>：</p>
+<ul>
+<li><p><strong>作用：</strong></p>
+<ul>
+<li>自动按照类型注入。只要容器中有唯一的一个bean对象类型和要注入的变量类型匹配，就可以注入成功</li>
+<li>如果ioc容器中没有任何bean类型和要注入的变量类型匹配，则报错。</li>
+<li>如果ioc容器中有多个类型匹配时：</li>
+</ul>
+</li>
+<li><p><strong>出现位置：</strong></p>
+<ul>
+<li>可以是变量上，也可以是方法上</li>
+</ul>
+</li>
+<li><p><strong>细节：</strong></p>
+<ul>
+<li>在使用注解注入时，set方法就不是必须的了</li>
+</ul>
+</li>
+</ul>
+<p><code>@Qualifier</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>在按照类型注入的基础之上再按照名称注入。它在给类成员注入时不能单独使用。但是在给方法参数注入时可以</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：用于指定注入bean的id</li>
+</ul>
+</li>
+</ul>
+<p><code>@Resource</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>直接按照bean的id注入。可以独立使用</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>name：用于指定注入bean的id</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>以上三个注入都只能注入其他bean类型的数据，而基本类型和String类型无法使用上述注解实现</p>
+<p>另外集合类型的注入只能通过XML来实现</p>
+</blockquote>
+<p><code>@Value</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>用于注入基本类型和String类型的数据</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：用于指定数据的值。可以使用spring的SpEL(也就是spring的el表达式)</li>
+<li>SpEL的写法：${表达式}</li>
+</ul>
+</li>
+</ul>
+<h3 id="用于改变作用范围的"><a href="#用于改变作用范围的" class="headerlink" title="用于改变作用范围的"></a>用于改变作用范围的</h3><blockquote>
+<p>他们的作用就和在<code>&lt;bean&gt;</code>标签中使用<code>scope</code>属性实现的功能是一样的</p>
+</blockquote>
+<p><code>@Scope</code>：</p>
+<ul>
+<li><p><strong>作用：</strong>用于指定bean的作用范围</p>
+</li>
+<li><p><strong>属性：</strong></p>
+<ul>
+<li>value：指定范围的取值。常用取值<code>singleton</code> <code>prototype</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="和声明周期相关的"><a href="#和声明周期相关的" class="headerlink" title="和声明周期相关的"></a>和声明周期相关的</h3><blockquote>
+<p><code>&lt;bean&gt;</code>标签中使用<code>init-method</code>和<code>destroy-method</code>的作用是一样的</p>
+</blockquote>
+<p><code>@PreDestroy</code>：</p>
+<ul>
+<li><strong>作用：</strong>用于指定销毁方法</li>
+</ul>
+<p><code>@PostConstruct</code>：</p>
+<ul>
+<li><strong>作用：</strong>用于指定初始化方法</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>spring</tag>
+        <tag>java</tag>
       </tags>
   </entry>
 </search>
