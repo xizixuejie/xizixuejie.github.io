@@ -36,6 +36,57 @@
   </entry>
   
   <entry>
+    <title>GitLab迁移</title>
+    <link href="http://example.com/posts/ffe649ce/"/>
+    <id>http://example.com/posts/ffe649ce/</id>
+    <published>2023-04-25T07:19:15.000Z</published>
+    <updated>2023-07-18T07:25:14.430Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;记录迁移GitLab操作步骤&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="gitlab" scheme="http://example.com/tags/gitlab/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用EasyExcelListener没有事务的解决办法</title>
+    <link href="http://example.com/posts/27fb1a03/"/>
+    <id>http://example.com/posts/27fb1a03/</id>
+    <published>2022-12-12T07:09:33.000Z</published>
+    <updated>2023-07-18T07:17:19.214Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;在Spring Boot项目中使用 &lt;code&gt;easyexcel&lt;/code&gt; 导入excel时，如果选择分批导入数据，因为是用直接new创建的 &lt;code&gt;AnalysisEventListener&lt;/code&gt; 的实现类，传入的service或mapper参数来保存到数据库，会出现每次保存都提交了事务，如果后面数据出现了异常，之前批次导入的数据不会回滚。&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android无线连接调试</title>
+    <link href="http://example.com/posts/c59f6284/"/>
+    <id>http://example.com/posts/c59f6284/</id>
+    <published>2022-11-01T07:43:00.000Z</published>
+    <updated>2023-07-18T07:46:33.425Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;Android10 及以下和Android11 及以上不同的无线连接调试方式&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="android" scheme="http://example.com/tags/android/"/>
+    
+  </entry>
+  
+  <entry>
     <title>SpringBoot的事件监听</title>
     <link href="http://example.com/posts/59d95f97/"/>
     <id>http://example.com/posts/59d95f97/</id>
@@ -327,69 +378,6 @@
     
     
     <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring中基于xml的aop配置</title>
-    <link href="http://example.com/posts/f21e4f2a/"/>
-    <id>http://example.com/posts/f21e4f2a/</id>
-    <published>2021-01-21T08:31:47.000Z</published>
-    <updated>2021-08-17T05:48:55.901Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;AOP （Aspect Orient Programming），直译过来就是 面向切面编程。AOP 是一种编程思想，是面向对象编程（OOP）的一种补充。面向对象编程将程序抽象成各个层次的对象，而面向切面编程是将程序抽象成各个切面。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    
-    <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring中的注解ioc</title>
-    <link href="http://example.com/posts/6a832505/"/>
-    <id>http://example.com/posts/6a832505/</id>
-    <published>2021-01-20T05:53:05.000Z</published>
-    <updated>2021-08-17T05:55:04.109Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;spring中注解ioc的简单用法&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>spring中的依赖注入</title>
-    <link href="http://example.com/posts/45b64bd9/"/>
-    <id>http://example.com/posts/45b64bd9/</id>
-    <published>2021-01-20T02:38:08.000Z</published>
-    <updated>2021-04-27T01:58:06.030Z</updated>
-    
-    
-    <summary type="html">&lt;blockquote&gt;
-&lt;p&gt;依赖注入：Dependency Injection&lt;/p&gt;
-&lt;p&gt;IOC的作用：降低程序间的耦合（依赖关系）&lt;/p&gt;
-&lt;p&gt;依赖关系的管理：以后都交给spring来维护&lt;/p&gt;
-&lt;p&gt;在当前类中需要用到其他类的对象，由spring为我们提供，我我们只需要在配置文件中说明&lt;/p&gt;
-&lt;p&gt;依赖关系的维护 就称之为依赖注入。&lt;/p&gt;
-&lt;/blockquote&gt;</summary>
-    
-    
-    
-    
-    <category term="spring" scheme="http://example.com/tags/spring/"/>
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
     
   </entry>
   

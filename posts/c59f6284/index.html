@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>Tag: java |  四风谷的雨</title>
+      <title>Android无线连接调试 |  四风谷的雨</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -46,86 +46,249 @@
       
     <main class="content on">
       <section class="outer">
-  
-  
-  <article class="articles">
+  <article
+  id="post-Android无线连接调试"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">#&nbspjava</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2021" class="archive-year">2021</a>
-    </div>
-    <div class="archives">
-      
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/posts/d2d18c1a/" class="archive-article-date">
-  <time datetime="2021-01-03T01:41:53.000Z" itemprop="datePublished">01/03</time>
-</a>
+    <header class="article-header">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/posts/d2d18c1a/"
-    >注解的基本用法</a> 
-</h2>
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Android无线连接调试
+</h1>
  
 
+      
     </header>
-    
-    
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+     
+    <div class="article-meta">
+      <a href="/posts/c59f6284/" class="article-date">
+  <time datetime="2022-11-01T07:43:00.000Z" itemprop="datePublished">2022-11-01</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">558</span>
+        </span>
+    </span>
 
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/posts/b6639a47/" class="archive-article-date">
-  <time datetime="2021-01-02T12:20:38.000Z" itemprop="datePublished">01/02</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/posts/b6639a47/"
-    >反射的基本用法</a> 
-</h2>
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">2 分钟</span>
+        </span>
+    </span>
+</div>
  
-
-    </header>
-    
-    
+    </div>
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+    <div class="tocbot"></div>
 
-    
-  </div>
-</article>
-      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>Android10 及以下和Android11 及以上不同的无线连接调试方式</p>
+<span id="more"></span>
+
+<h2 id="Android11-及以上"><a href="#Android11-及以上" class="headerlink" title="Android11 及以上"></a>Android11 及以上</h2><p>Android 11 及更高版本支持使用 Android 调试桥 (adb) 从工作站以无线方式部署和调试应用。例如，您可以将可调试应用部署到多台远程设备，而无需通过 USB 实际连接设备。这样就可以避免常见的 USB 连接问题，例如驱动程序安装方面的问题。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.android.com/studio/command-line/adb?hl=zh_cn#connect-to-a-device-over-wi-fi-android-11+">官方文档</a></p>
+<ol>
+<li>更新到最新版本的 <a target="_blank" rel="noopener" href="https://developer.android.com/studio/releases/platform-tools?hl=zh_cn">SDK 平台工具</a>(至少30.0.0)。</li>
+<li>将 Android 设备与要运行 adb 的电脑连接到同一个局域网，比如连到同一个 WiFi。</li>
+<li>在开发者选项中启用<strong>无线调试</strong>。</li>
+<li>在询问要允许在此网络上进行无线调试吗？的对话框中，点击允许。</li>
+<li>选择使用配对码配对设备，使用弹窗中的 IP 地址和端口号。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb pair ipaddr:port</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>提示<code>Enter pairing code:</code> 时输入弹窗中的配对码，成功后会显示<code>Successfully paired to ...</code>。</li>
+<li>使用无线调试下的 <strong>IP 地址和端口</strong>。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb connect ipaddr:port</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>确认连接状态。</p>
+<p><code>adb devices</code></p>
+<p>如果能看到</p>
+<p><code>ipaddr:port device</code></p>
+</li>
+</ol>
+<p>说明连接成功。</p>
+<h2 id="Android10-及以下"><a href="#Android10-及以下" class="headerlink" title="Android10 及以下"></a>Android10 及以下</h2><ol>
+<li><p>将 Android 设备与要运行 adb 的电脑连接到同一个局域网，比如连到同一个 WiFi。</p>
+</li>
+<li><p>将设备与电脑通过 USB 线连接。</p>
+<p>应确保连接成功（可运行 <code>adb devices</code> 看是否能列出该设备）。</p>
+</li>
+<li><p>让设备在 5555 端口监听 TCP/IP 连接：</p>
+<p><code>adb tcpip 5555</code></p>
+</li>
+<li><p>断开 USB 连接。</p>
+</li>
+<li><p>找到设备的 IP 地址。</p>
+<p>一般能在「设置」-「关于手机」-「状态信息」-「IP地址」找到。</p>
+</li>
+<li><p>通过 IP 地址连接设备。</p>
+<p><code>adb connect &lt;device-ip-address&gt;</code></p>
+<p>这里的 <code>&lt;device-ip-address&gt;</code> 就是上一步中找到的设备 IP 地址。</p>
+</li>
+<li><p>确认连接状态。</p>
+<p><code>adb devices</code></p>
+<p>如果能看到</p>
+<p><code>&lt;device-ip-address&gt;:5555 device</code></p>
+<p>说明连接成功。</p>
+</li>
+</ol>
+<p>如果连接不了，请确认 Android 设备与电脑是连接到了同一个 WiFi，然后再次执行 <code>adb connect &lt;device-ip-address&gt;</code> 那一步；</p>
+<p>如果还是不行的话，通过 <code>adb kill-server</code> 重新启动 adb 然后从头再来一次试试。</p>
+<h2 id="断开无线连接"><a href="#断开无线连接" class="headerlink" title="断开无线连接"></a>断开无线连接</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb disconnect &lt;device-ip-address&gt;</span><br></pre></td></tr></table></figure>
+ 
+      <!-- reward -->
       
     </div>
-  </div>
-  
-  
-
-  
-  <nav class="page-nav">
     
-    <a class="extend prev" rel="prev" href="/tags/java/">上一页</a><a class="page-number" href="/tags/java/">1</a><span class="page-number current">2</span>
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/posts/c59f6284/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/posts/27fb1a03/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            使用EasyExcelListener没有事务的解决办法
+          
+        </div>
+      </a>
+    
+    
+      <a href="/posts/59d95f97/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">SpringBoot的事件监听</div>
+      </a>
+    
   </nav>
-  
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+   
+     
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -254,6 +417,22 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link

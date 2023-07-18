@@ -2237,4 +2237,111 @@
         <tag>spring</tag>
       </tags>
   </entry>
+  <entry>
+    <title>使用EasyExcelListener没有事务的解决办法</title>
+    <url>/posts/27fb1a03/</url>
+    <content><![CDATA[<p>在Spring Boot项目中使用 <code>easyexcel</code> 导入excel时，如果选择分批导入数据，因为是用直接new创建的 <code>AnalysisEventListener</code> 的实现类，传入的service或mapper参数来保存到数据库，会出现每次保存都提交了事务，如果后面数据出现了异常，之前批次导入的数据不会回滚。</p>
+<span id="more"></span>
+
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>手动管理事务</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TransactionalExcelListener</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">AnalysisEventListener</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 事务管理</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DataSourceTransactionManager dataSourceTransactionManager;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> TransactionStatus transactionStatus;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BATCH_COUNT = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    List&lt;T&gt; dataList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> IService&lt;T&gt; service;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">TransactionalExcelListener</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            DataSourceTransactionManager dataSourceTransactionManager,</span></span></span><br><span class="line"><span class="function"><span class="params">            TransactionDefinition transactionDefinition,</span></span></span><br><span class="line"><span class="function"><span class="params">            IService&lt;T&gt; service)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.service= service;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.dataSourceTransactionManager = dataSourceTransactionManager;</span><br><span class="line">        DefaultTransactionDefinition definition = <span class="keyword">new</span> DefaultTransactionDefinition(transactionDefinition);</span><br><span class="line">        <span class="comment">// 设置事务隔离级别</span></span><br><span class="line">        definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);</span><br><span class="line">        <span class="comment">// 手动开启事务</span></span><br><span class="line">        <span class="keyword">this</span>.transactionStatus = dataSourceTransactionManager.getTransaction(definition);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">invoke</span><span class="params">(T rowData, AnalysisContext analysisContext)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> hasCompleted = transactionStatus.isCompleted();</span><br><span class="line">        <span class="comment">// 如果事务已经关闭</span></span><br><span class="line">        <span class="keyword">if</span> (hasCompleted) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        dataList.add(rowData);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (dataList.size() &gt;= BATCH_COUNT) &#123;</span><br><span class="line">            saveData();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doAfterAllAnalysed</span><span class="params">(AnalysisContext context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> hasCompleted = transactionStatus.isCompleted();</span><br><span class="line">        <span class="keyword">if</span> (hasCompleted) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        saveData();</span><br><span class="line">        log.info(<span class="string">&quot;所有数据解析完成！&quot;</span>);</span><br><span class="line">        <span class="comment">//提交事务</span></span><br><span class="line">        dataSourceTransactionManager.commit(transactionStatus);</span><br><span class="line">        log.info(<span class="string">&quot;当前事务已提交&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onException</span><span class="params">(Exception exception, AnalysisContext context)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;导入出现异常，事务回滚&quot;</span>);</span><br><span class="line">        dataSourceTransactionManager.rollback(transactionStatus);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 加上存储数据库</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">saveData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;&#123;&#125;条数据，开始存储数据库！&quot;</span>, dataList.size());</span><br><span class="line">        service.saveBatch(dataList);</span><br><span class="line">        log.info(<span class="string">&quot;存储数据库成功！&quot;</span>);</span><br><span class="line">        dataList.clear();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GitLab迁移</title>
+    <url>/posts/ffe649ce/</url>
+    <content><![CDATA[<p>记录迁移GitLab操作步骤</p>
+<span id="more"></span>
+
+<p>首先尽量保证原始服务器和目标服务器版本一致</p>
+<ol>
+<li><p>在源服务器执行命令备份</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:create</span><br></pre></td></tr></table></figure>
+
+<p>会生成一个 <code>1680158441_2023_03_30_14.0.1_gitlab_backup.tar</code> 文件</p>
+</li>
+<li><p>把第 1 步的压缩包上传到新服务器，<u><em><strong>以下命令在新服务器执行</strong></em></u></p>
+</li>
+<li><p>修改备份文件权限</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chmod 777 1680158441_2023_03_30_14.0.1_gitlab_backup.tar</span><br></pre></td></tr></table></figure></li>
+<li><p>停止unicorn和sidekiq服务</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gitlab-ctl stop unicorn</span><br><span class="line">gitlab-ctl stop sidekiq</span><br></pre></td></tr></table></figure></li>
+<li><p>应用备份数据</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gitlab-rake gitlab:backup:restore BACKUP=1680158441_2023_03_30_14.0.1</span><br></pre></td></tr></table></figure></li>
+<li><p>重启gitlab服务</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">gitlab-ctl start</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>gitlab</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android无线连接调试</title>
+    <url>/posts/c59f6284/</url>
+    <content><![CDATA[<p>Android10 及以下和Android11 及以上不同的无线连接调试方式</p>
+<span id="more"></span>
+
+<h2 id="Android11-及以上"><a href="#Android11-及以上" class="headerlink" title="Android11 及以上"></a>Android11 及以上</h2><p>Android 11 及更高版本支持使用 Android 调试桥 (adb) 从工作站以无线方式部署和调试应用。例如，您可以将可调试应用部署到多台远程设备，而无需通过 USB 实际连接设备。这样就可以避免常见的 USB 连接问题，例如驱动程序安装方面的问题。</p>
+<p><a href="https://developer.android.com/studio/command-line/adb?hl=zh_cn#connect-to-a-device-over-wi-fi-android-11+">官方文档</a></p>
+<ol>
+<li>更新到最新版本的 <a href="https://developer.android.com/studio/releases/platform-tools?hl=zh_cn">SDK 平台工具</a>(至少30.0.0)。</li>
+<li>将 Android 设备与要运行 adb 的电脑连接到同一个局域网，比如连到同一个 WiFi。</li>
+<li>在开发者选项中启用<strong>无线调试</strong>。</li>
+<li>在询问要允许在此网络上进行无线调试吗？的对话框中，点击允许。</li>
+<li>选择使用配对码配对设备，使用弹窗中的 IP 地址和端口号。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb pair ipaddr:port</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>提示<code>Enter pairing code:</code> 时输入弹窗中的配对码，成功后会显示<code>Successfully paired to ...</code>。</li>
+<li>使用无线调试下的 <strong>IP 地址和端口</strong>。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb connect ipaddr:port</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>确认连接状态。</p>
+<p><code>adb devices</code></p>
+<p>如果能看到</p>
+<p><code>ipaddr:port device</code></p>
+</li>
+</ol>
+<p>说明连接成功。</p>
+<h2 id="Android10-及以下"><a href="#Android10-及以下" class="headerlink" title="Android10 及以下"></a>Android10 及以下</h2><ol>
+<li><p>将 Android 设备与要运行 adb 的电脑连接到同一个局域网，比如连到同一个 WiFi。</p>
+</li>
+<li><p>将设备与电脑通过 USB 线连接。</p>
+<p>应确保连接成功（可运行 <code>adb devices</code> 看是否能列出该设备）。</p>
+</li>
+<li><p>让设备在 5555 端口监听 TCP/IP 连接：</p>
+<p><code>adb tcpip 5555</code></p>
+</li>
+<li><p>断开 USB 连接。</p>
+</li>
+<li><p>找到设备的 IP 地址。</p>
+<p>一般能在「设置」-「关于手机」-「状态信息」-「IP地址」找到。</p>
+</li>
+<li><p>通过 IP 地址连接设备。</p>
+<p><code>adb connect &lt;device-ip-address&gt;</code></p>
+<p>这里的 <code>&lt;device-ip-address&gt;</code> 就是上一步中找到的设备 IP 地址。</p>
+</li>
+<li><p>确认连接状态。</p>
+<p><code>adb devices</code></p>
+<p>如果能看到</p>
+<p><code>&lt;device-ip-address&gt;:5555 device</code></p>
+<p>说明连接成功。</p>
+</li>
+</ol>
+<p>如果连接不了，请确认 Android 设备与电脑是连接到了同一个 WiFi，然后再次执行 <code>adb connect &lt;device-ip-address&gt;</code> 那一步；</p>
+<p>如果还是不行的话，通过 <code>adb kill-server</code> 重新启动 adb 然后从头再来一次试试。</p>
+<h2 id="断开无线连接"><a href="#断开无线连接" class="headerlink" title="断开无线连接"></a>断开无线连接</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb disconnect &lt;device-ip-address&gt;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>android</tag>
+      </tags>
+  </entry>
 </search>
