@@ -11,7 +11,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1"
       />
-      <title>SpringMVC的异常处理 |  四风谷的雨</title>
+      <title>Tag: maven |  四风谷的雨</title>
   <meta name="generator" content="hexo-theme-ayer">
       
       <link rel="shortcut icon" href="/favicon.ico" />
@@ -46,205 +46,56 @@
       
     <main class="content on">
       <section class="outer">
-  <article
-  id="post-SpringMVC的异常处理"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
+  
+  
+  <article class="articles">
     
-    <header class="article-header">
-       
-<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  SpringMVC的异常处理
-</h1>
- 
-
-      
-    </header>
-     
-    <div class="article-meta">
-      <a href="/posts/b57ff469/" class="article-date">
-  <time datetime="2021-03-04T02:46:20.000Z" itemprop="datePublished">2021-03-04</time>
-</a>   
-<div class="word_count">
-    <span class="post-time">
-        <span class="post-meta-item-icon">
-            <i class="ri-quill-pen-line"></i>
-            <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">215</span>
-        </span>
-    </span>
-
-    <span class="post-time">
-        &nbsp; | &nbsp;
-        <span class="post-meta-item-icon">
-            <i class="ri-book-open-line"></i>
-            <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">1 分钟</span>
-        </span>
-    </span>
-</div>
- 
+    
+    <h1 class="page-type-title">#&nbspmaven</h1>
+    
+    
+  
+  
+  
+  
+  
+  
+  <div class="archives-wrap">
+    <div class="archive-year-wrap">
+      <a href="/archives/2023" class="archive-year">2023</a>
     </div>
+    <div class="archives">
       
-    <div class="tocbot"></div>
+      <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/posts/736c392f/" class="archive-article-date">
+  <time datetime="2023-05-12T07:03:13.000Z" itemprop="datePublished">05/12</time>
+</a>
+       
+<h2 itemprop="name">
+  <a class="archive-article-title" href="/posts/736c392f/"
+    >dockerfile-maven-plugin多模块配置方式</a> 
+</h2>
+ 
 
+    </header>
+    
+    
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/" rel="tag">docker</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/" rel="tag">maven</a></li></ul>
 
-
+    
+  </div>
+</article>
+      
+      
+    </div>
+  </div>
+  
+  
 
   
-    <div class="article-entry" itemprop="articleBody">
-       
-  <h2 id="异常处理的思路"><a href="#异常处理的思路" class="headerlink" title="异常处理的思路"></a>异常处理的思路</h2><p>Controller调用Service，Service调用Dao，异常都是向上抛出的，最终有DispatcherServlet找异常处理器进行处理。</p>
-<span id="more"></span>
-
-<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><ol>
-<li><p>编写自定义异常类（做提示信息的）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyException</span> <span class="keyword">extends</span> <span class="title">Exception</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyException</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMessage</span><span class="params">(String message)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.message = message;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>编写异常处理器 实现 <code>HandlerExceptionResolver</code> 接口</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyExceptionResolver</span> <span class="keyword">implements</span> <span class="title">HandlerExceptionResolver</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ModelAndView <span class="title">resolveException</span><span class="params">(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取到异常对象</span></span><br><span class="line">        MyException exception;</span><br><span class="line">        <span class="keyword">if</span> (e <span class="keyword">instanceof</span> MyException)&#123;</span><br><span class="line">            exception = (MyException) e;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            exception = <span class="keyword">new</span> MyException(<span class="string">&quot;出错了&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建ModelAndView对象</span></span><br><span class="line">        ModelAndView mv = <span class="keyword">new</span> ModelAndView(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        mv.addObject(<span class="string">&quot;errorMsg&quot;</span>, exception.getMessage());</span><br><span class="line">        <span class="keyword">return</span> mv;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>在springmvc.xml配置异常处理器</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;com.xzxj.exception.MyExceptionResolver&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>再出异常就会跳转到/WEB-INF/jsp/error.jsp页面提示错误</p>
- 
-      <!-- reward -->
-      
-    </div>
-    
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-<div class="share-btn">
-      <span class="share-sns share-outer">
-        <i class="ri-share-forward-line"></i>
-        分享
-      </span>
-      <div class="share-wrap">
-        <i class="arrow"></i>
-        <div class="share-icons">
-          
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="ri-weibo-fill"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="ri-wechat-fill"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="ri-qq-fill"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="ri-douban-line"></i>
-          </a>
-          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a> -->
-          
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="ri-facebook-circle-fill"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="ri-twitter-fill"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="ri-google-fill"></i>
-          </a>
-        </div>
-      </div>
-</div>
-
-<div class="wx-share-modal">
-    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://example.com/posts/b57ff469/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div id="share-mask"></div>  
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringMVC/" rel="tag">SpringMVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
-
-    </footer>
-  </div>
-
-   
-  <nav class="article-nav">
-    
-      <a href="/posts/fa194db2/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            SpringMVC中的拦截器
-          
-        </div>
-      </a>
-    
-    
-      <a href="/posts/649603b7/" class="article-nav-link">
-        <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">SpringMVC文件上传</div>
-      </a>
-    
-  </nav>
-
-   
-<!-- valine评论 -->
-<div id="vcomments-box">
-  <div id="vcomments"></div>
-</div>
-<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
-<script>
-  new Valine({
-    el: "#vcomments",
-    app_id: "",
-    app_key: "",
-    path: window.location.pathname,
-    avatar: "monsterid",
-    placeholder: "给我的文章加点评论吧~",
-    recordIP: true,
-  });
-  const infoEle = document.querySelector("#vcomments .info");
-  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
-    infoEle.childNodes.forEach(function (item) {
-      item.parentNode.removeChild(item);
-    });
-  }
-</script>
-<style>
-  #vcomments-box {
-    padding: 5px 30px;
-  }
-
-  @media screen and (max-width: 800px) {
-    #vcomments-box {
-      padding: 5px 0px;
-    }
-  }
-
-  #vcomments-box #vcomments {
-    background-color: #fff;
-  }
-
-  .v .vlist .vcard .vh {
-    padding-right: 20px;
-  }
-
-  .v .vlist .vcard {
-    padding-left: 10px;
-  }
-</style>
-
- 
-   
-     
-</article>
-
 </section>
       <footer class="footer">
   <div class="outer">
@@ -373,22 +224,6 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
- 
-<script src="/js/tocbot.min.js"></script>
-
-<script>
-  tocbot.init({
-    tocSelector: ".tocbot",
-    contentSelector: ".article-entry",
-    headingSelector: "h1, h2, h3, h4, h5, h6",
-    hasInnerContainers: true,
-    scrollSmooth: true,
-    scrollContainer: "main",
-    positionFixedSelector: ".tocbot",
-    positionFixedClass: "is-position-fixed",
-    fixedSidebarOffset: "auto",
-  });
-</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link
